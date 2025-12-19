@@ -12,7 +12,7 @@ export default function NoiseDistortion({
     speed = 0.5
 }: NoiseDistortionProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const animationRef = useRef<number>();
+    const animationRef = useRef<number | undefined>(undefined);
     const timeRef = useRef(0);
 
     useEffect(() => {

@@ -334,10 +334,16 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
                 const newProgress = Math.min(prev + 12, 100);
 
                 if (newProgress >= 100) {
-                    // 1. Force audio stop immediately
+                    // 1. Immediately clear beep interval
+                    if (beepIntervalRef.current) {
+                        clearInterval(beepIntervalRef.current);
+                        beepIntervalRef.current = null;
+                    }
+
+                    // 2. Force audio stop
                     setCalibrationAudio(0, 0);
 
-                    // 2. Play success sound only if we weren't already calibrated
+                    // 3. Play success sound only if we weren't already calibrated
                     if (!isCalibrated) {
                         setIsCalibrated(true);
                         // Small delay to ensure silence first

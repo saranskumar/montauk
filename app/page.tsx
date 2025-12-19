@@ -15,6 +15,7 @@ import Scanlines from '@/components/effects/Scanlines';
 import Particles from '@/components/effects/Particles';
 import SignalCalibrator from '@/components/signal/SignalCalibrator';
 import SignalWaveWatermark from '@/components/SignalWaveWatermark';
+import ViralSpread from '@/components/effects/ViralSpread';
 import GlitchEffect from '@/components/effects/GlitchEffect';
 import AudioController from '@/components/effects/AudioController';
 
@@ -29,6 +30,8 @@ export default function Home() {
   // State
   const [booting, setBooting] = useState(true);
   const [isUpsideDownMode, setIsUpsideDownMode] = useState(false);
+  const [glitchTrigger, setGlitchTrigger] = useState(0); // Trigger for transition effect
+  const [spreadOrigin, setSpreadOrigin] = useState({ x: 0, y: 0 });
   const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showSignalCalibrator, setShowSignalCalibrator] = useState(false);
@@ -74,7 +77,12 @@ export default function Home() {
 
       // U - Toggle Upside Down Mode
       if (e.key.toLowerCase() === 'u') {
+        // Use center of screen for keyboard shortcut
+        const x = window.innerWidth / 2;
+        const y = window.innerHeight / 2;
+        setSpreadOrigin({ x, y });
         setIsUpsideDownMode((prev) => !prev);
+        setGlitchTrigger(prev => prev + 1);
       }
 
       // N - New Incident
@@ -148,6 +156,13 @@ export default function Home() {
       {/* <div className="scanline-effect" /> */}
       {isUpsideDownMode && <Particles isUpsideDownMode={isUpsideDownMode} />}
 
+      {/* Viral Spread Effect */}
+      <ViralSpread
+        isActive={isUpsideDownMode}
+        originX={spreadOrigin.x}
+        originY={spreadOrigin.y}
+      />
+
       {/* Upside Down Glitch Effect */}
       <GlitchEffect isActive={isUpsideDownMode} />
       <AudioController isActive={true} isUpsideDownMode={isUpsideDownMode} />
@@ -165,99 +180,126 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* Header */}
-      <Header
-        isUpsideDownMode={isUpsideDownMode}
-        onToggleUpsideDown={() => setIsUpsideDownMode((prev) => !prev)}
-        onCreateIncident={() => setShowCreateModal(true)}
-        threatStats={threatStats}
-      />
+      {/* Main Content with Glitch Transition */}
+      <motion.div
+        key={glitchTrigger}
+        initial={{
+          x: 0,
+          y: 0,
+          rotate: 0,
+          scale: 1
+        }}
+        animate={{
+          x: [0, -20, 15, -10, 5, 0],
+          y: [0, 15, -20, 10, -5, 0],
+          rotate: [0, -2, 3, -1, 0],
+          scale: [1, 0.98, 1.02, 0.99, 1],
+        }}
+        transition={{
+          duration: 0.4,
+          times: [0, 0.2, 0.4, 0.6, 0.8, 1],
+          ease: "easeInOut"
+        }}
+        className="relative"
+      >
+        {/* Header */}
+        <Header
+          isUpsideDownMode={isUpsideDownMode}
+          onToggleUpsideDown={(x, y) => {
+            setSpreadOrigin({ x, y });
+            setIsUpsideDownMode((prev) => !prev);
+            setGlitchTrigger(prev => prev + 1);
+          }}
+          onCreateIncident={() => setShowCreateModal(true)}
+          threatStats={threatStats}
+        />
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-6">
-        {/* Filters */}
-        <FilterBar
-          filters={filters}
-          onFilterChange={handleFilterChange}
+        {/* Main Content */}
+        <main className="max-w-7xl mx-auto px-4 py-6">
+          {/* Filters */}
+          <FilterBar
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            isUpsideDownMode={isUpsideDownMode}
+          />
+
+          {/* Two Column Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Incident List */}
+            <div className={`lg:col-span-2 ${selectedIncident ? 'lg:col-span-2' : 'lg:col-span-3'}`}>
+              <IncidentList
+                incidents={incidents}
+                filters={filters}
+                selectedId={selectedIncident?.id || null}
+                onSelectIncident={setSelectedIncident}
+                isUpsideDownMode={isUpsideDownMode}
+              />
+            </div>
+          </div>
+        </main>
+
+        {/* Incident Details Panel */}
+        <AnimatePresence>
+          {selectedIncident && (
+            <>
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setSelectedIncident(null)}
+                className="fixed inset-0 bg-black/50 z-40"
+              />
+              <IncidentPanel
+                incident={selectedIncident}
+                isUpsideDownMode={isUpsideDownMode}
+                onClose={() => setSelectedIncident(null)}
+                onUpdateStatus={handleUpdateStatus}
+              />
+            </>
+          )}
+        </AnimatePresence>
+
+        {/* Create Incident Modal */}
+        <AnimatePresence>
+          {showCreateModal && (
+            <CreateIncidentModal
+              isUpsideDownMode={isUpsideDownMode}
+              onClose={() => setShowCreateModal(false)}
+              onSubmit={handleCreateIncident}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* Signal Calibrator */}
+        <AnimatePresence>
+          {showSignalCalibrator && (
+            <SignalCalibrator
+              isUpsideDownMode={isUpsideDownMode}
+              onClose={() => setShowSignalCalibrator(false)}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* Toast Notifications */}
+        <ToastContainer
+          toasts={toasts}
+          onDismiss={dismissToast}
           isUpsideDownMode={isUpsideDownMode}
         />
 
-        {/* Two Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Incident List */}
-          <div className={`lg:col-span-2 ${selectedIncident ? 'lg:col-span-2' : 'lg:col-span-3'}`}>
-            <IncidentList
-              incidents={incidents}
-              filters={filters}
-              selectedId={selectedIncident?.id || null}
-              onSelectIncident={setSelectedIncident}
-              isUpsideDownMode={isUpsideDownMode}
-            />
-          </div>
+        {/* Signal Wave Watermark */}
+        <SignalWaveWatermark isUpsideDownMode={isUpsideDownMode} />
+
+        {/* Keyboard Shortcuts Hint */}
+        <div className={`fixed bottom-4 left-4 z-30 text-[10px] opacity-40 select-none flex gap-4 ${isUpsideDownMode ? 'text-upside-down-glow' : 'text-hawkins-text-dim'
+          }`}>
+          <span>PRESS 'U' TO TOGGLE UPSIDE DOWN MODE</span>
+          <span>PRESS 'C' FOR SIGNAL CALIBRATOR</span>
+          <span>PRESS 'N' TO LOG INCIDENT</span>
+          <span>TYPE 'HAWKINS' FOR TEMPORAL PURGE</span>
         </div>
-      </main>
-
-      {/* Incident Details Panel */}
-      <AnimatePresence>
-        {selectedIncident && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedIncident(null)}
-              className="fixed inset-0 bg-black/50 z-40"
-            />
-            <IncidentPanel
-              incident={selectedIncident}
-              isUpsideDownMode={isUpsideDownMode}
-              onClose={() => setSelectedIncident(null)}
-              onUpdateStatus={handleUpdateStatus}
-            />
-          </>
-        )}
-      </AnimatePresence>
-
-      {/* Create Incident Modal */}
-      <AnimatePresence>
-        {showCreateModal && (
-          <CreateIncidentModal
-            isUpsideDownMode={isUpsideDownMode}
-            onClose={() => setShowCreateModal(false)}
-            onSubmit={handleCreateIncident}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Signal Calibrator */}
-      <AnimatePresence>
-        {showSignalCalibrator && (
-          <SignalCalibrator
-            isUpsideDownMode={isUpsideDownMode}
-            onClose={() => setShowSignalCalibrator(false)}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Toast Notifications */}
-      <ToastContainer
-        toasts={toasts}
-        onDismiss={dismissToast}
-        isUpsideDownMode={isUpsideDownMode}
-      />
-
-      {/* Signal Wave Watermark */}
-      <SignalWaveWatermark isUpsideDownMode={isUpsideDownMode} />
-
-      {/* Keyboard Shortcuts Hint */}
-      <div className={`fixed bottom-4 left-4 z-30 text-[10px] opacity-40 select-none flex gap-4 ${isUpsideDownMode ? 'text-upside-down-glow' : 'text-hawkins-text-dim'
-        }`}>
-        <span>PRESS 'U' TO TOGGLE UPSIDE DOWN MODE</span>
-        <span>PRESS 'C' FOR SIGNAL CALIBRATOR</span>
-        <span>PRESS 'N' TO LOG INCIDENT</span>
-        <span>TYPE 'HAWKINS' FOR TEMPORAL PURGE</span>
-      </div>
+      </motion.div>
     </div>
   );
 }

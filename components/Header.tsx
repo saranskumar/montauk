@@ -1,11 +1,11 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { Clock, Radio, Zap } from 'lucide-react';
 
 interface HeaderProps {
     isUpsideDownMode: boolean;
-    onToggleUpsideDown: () => void;
+    onToggleUpsideDown: (x: number, y: number) => void;
     onCreateIncident: () => void;
     threatStats: {
         CRITICAL: number;
@@ -27,11 +27,24 @@ export default function Header({
         return now.toLocaleTimeString('en-US', { hour12: false });
     }, []);
 
+    const buttonRef = useRef<HTMLButtonElement>(null);
+
+    const handleToggle = () => {
+        if (buttonRef.current) {
+            const rect = buttonRef.current.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+            onToggleUpsideDown(x, y);
+        } else {
+            onToggleUpsideDown(0, 0);
+        }
+    };
+
     return (
         <header
             className={`border-b-2 backdrop-blur-sm sticky top-0 z-40 transition-colors duration-500 ${isUpsideDownMode
-                    ? 'border-upside-down-border bg-upside-down-bg/95'
-                    : 'border-hawkins-border bg-hawkins-bg/95'
+                ? 'border-upside-down-border bg-upside-down-bg/95'
+                : 'border-hawkins-border bg-hawkins-bg/95'
                 }`}
         >
             <div className="max-w-7xl mx-auto px-4 py-4">
@@ -62,8 +75,8 @@ export default function Header({
                         {/* Clock */}
                         <div
                             className={`flex items-center gap-2 px-3 py-1.5 rounded text-sm font-mono ${isUpsideDownMode
-                                    ? 'bg-upside-down-bg border border-upside-down-border text-upside-down-accent'
-                                    : 'bg-hawkins-bg-secondary border border-hawkins-border text-hawkins-text-primary'
+                                ? 'bg-upside-down-bg border border-upside-down-border text-upside-down-accent'
+                                : 'bg-hawkins-bg-secondary border border-hawkins-border text-hawkins-text-primary'
                                 }`}
                         >
                             <Clock className="w-4 h-4" />
@@ -72,10 +85,11 @@ export default function Header({
 
                         {/* UPSIDE DOWN Toggle */}
                         <button
-                            onClick={onToggleUpsideDown}
+                            ref={buttonRef}
+                            onClick={handleToggle}
                             className={`flex items-center gap-2 px-4 py-2 rounded font-bold text-sm uppercase tracking-wider transition-all ${isUpsideDownMode
-                                    ? 'bg-upside-down-accent text-black hover:bg-upside-down-glow'
-                                    : 'bg-hawkins-bg-secondary border border-hawkins-border text-hawkins-text-primary hover:border-hawkins-accent'
+                                ? 'bg-upside-down-accent text-black hover:bg-upside-down-glow'
+                                : 'bg-hawkins-bg-secondary border border-hawkins-border text-hawkins-text-primary hover:border-hawkins-accent'
                                 }`}
                         >
                             <Radio className="w-4 h-4" />
@@ -86,8 +100,8 @@ export default function Header({
                         <button
                             onClick={onCreateIncident}
                             className={`flex items-center gap-2 px-4 py-2 rounded font-bold text-sm uppercase tracking-wider transition-all ${isUpsideDownMode
-                                    ? 'bg-upside-down-danger text-white hover:bg-pink-400'
-                                    : 'bg-hawkins-accent text-black hover:bg-hawkins-accent-bright'
+                                ? 'bg-upside-down-danger text-white hover:bg-pink-400'
+                                : 'bg-hawkins-accent text-black hover:bg-hawkins-accent-bright'
                                 }`}
                         >
                             <Zap className="w-4 h-4" />
