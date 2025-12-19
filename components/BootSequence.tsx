@@ -105,11 +105,11 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
 
         // Load essential sounds
         Promise.all([
-            loadSound('click', '/audio/mixkit-on-or-off-light-switch-tap-2585.wav'),
-            loadSound('beep', '/audio/mixkit-alarm-digital-clock-beep-989.wav'),
-            loadSound('success', '/audio/mixkit-electronics-power-up-2602.wav'),
-            loadSound('error', '/audio/mixkit-futuristic-device-fail-2939.wav'),
-            loadSound('static', '/audio/mixkit-radio-waves-glitch-white-noise-1041.wav'),
+            loadSound('beep', '/audio/mixkit-alarm-clock-beep-988.wav'), // Normal buzzer beep
+            loadSound('success', '/audio/mixkit-futuristic-bass-hit-2303.wav'),
+            loadSound('error', '/audio/mixkit-negative-tone-interface-tap-2569.wav'), // Negative tone for errors
+            loadSound('static', '/audio/mixkit-terror-radio-frequency-2566.wav'), // Terror radio for suspense
+            loadSound('suspense', '/audio/mixkit-glitchy-cinematic-suspense-hit-679.wav'), // Extra tension
         ]);
 
         // Unlock audio on first interaction
@@ -117,6 +117,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
             if (ctx.state === 'suspended') {
                 ctx.resume();
             }
+            // Drone is handled by global AudioController
         };
         window.addEventListener('click', unlock, { once: true });
         window.addEventListener('keydown', unlock, { once: true });
@@ -129,7 +130,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
     }, []);
 
     // Sound playback function
-    const playSound = (type: 'click' | 'beep' | 'success' | 'error') => {
+    const playSound = (type: 'beep' | 'success' | 'error' | 'suspense') => {
         const ctx = audioContextRef.current;
         const buffer = audioBuffersRef.current[type];
         if (!ctx || !buffer) return;
@@ -151,6 +152,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
         // Static control
         if (staticVol > 0 && audioBuffersRef.current.static) {
             if (!staticNodeRef.current) {
+                // Only create new node if one doesn't exist
                 const src = ctx.createBufferSource();
                 src.buffer = audioBuffersRef.current.static;
                 src.loop = true;
@@ -161,9 +163,11 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
                 staticNodeRef.current = src;
                 staticGainRef.current = g;
             }
+            // Smoothly update volume
             staticGainRef.current?.gain.setTargetAtTime(staticVol * 0.4, ctx.currentTime, 0.1);
         } else {
-            if (staticNodeRef.current) {
+            // Stop only if volume is effectively 0 to avoid rapid toggling
+            if (staticVol <= 0.01 && staticNodeRef.current) {
                 staticNodeRef.current.stop();
                 staticNodeRef.current = null;
                 staticGainRef.current = null;
@@ -177,7 +181,8 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
         }
 
         if (beepRate > 0 && audioBuffersRef.current.beep) {
-            const delay = Math.max(50, 400 - beepRate * 350);
+            // Prevent extremely fast overlapping beeps (min 80ms)
+            const delay = Math.max(80, 400 - beepRate * 320);
             beepIntervalRef.current = window.setInterval(() => {
                 playSound('beep'); // Use beep instead of click
             }, delay);
@@ -194,7 +199,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
         messages.forEach((msg, index) => {
             setTimeout(() => {
                 setVisibleMessages((prev) => [...prev, index]);
-                playSound('click'); // Typing sound for each message
+                // No sound - silent cinematic text reveal
             }, msg.delay);
         });
 
@@ -323,11 +328,23 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
 
         if (isOptimal) {
             setCalibrationProgress((prev) => {
-                const newProgress = Math.min(prev + 4, 100);
-                if (newProgress >= 100 && !isCalibrated) {
-                    setIsCalibrated(true);
-                    playSound('success'); // Success sound for calibration lock
-                    setTimeout(() => setStage('auth'), 1000);
+                // If already at 100 or higher, do nothing
+                if (prev >= 100) return 100;
+
+                const newProgress = Math.min(prev + 12, 100);
+
+                if (newProgress >= 100) {
+                    // 1. Force audio stop immediately
+                    setCalibrationAudio(0, 0);
+
+                    // 2. Play success sound only if we weren't already calibrated
+                    if (!isCalibrated) {
+                        setIsCalibrated(true);
+                        // Small delay to ensure silence first
+                        setTimeout(() => playSound('success'), 100);
+                        setTimeout(() => setStage('auth'), 1500);
+                    }
+                    return 100;
                 }
                 return newProgress;
             });
@@ -371,12 +388,13 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
             beepRate = Math.max(0.1, calibrationProgress / 95);
         }
 
-        if (isCalibrated) {
+        if (isCalibrated || calibrationProgress >= 100) {
             staticVol = 0;
-            beepRate = 0; // Handled by success sound
+            beepRate = 0;
         }
 
-        setCalibrationAudio(staticVol, beepRate); // Use local function
+        // Only update if changes are significant to prevent re-triggering samples
+        setCalibrationAudio(staticVol, beepRate);
 
     }, [signalStrength, frequency, calibrationProgress, stage, isCalibrated]);
 
@@ -662,6 +680,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
                                                             setTimeout(() => setStage('connect'), 500);
                                                         } else {
                                                             setAuthError(true);
+                                                            playSound('error'); // Negative tone for wrong password
                                                             setTimeout(() => setAuthError(false), 2000);
                                                         }
                                                     }

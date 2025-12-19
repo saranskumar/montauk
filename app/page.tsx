@@ -150,7 +150,7 @@ export default function Home() {
 
       {/* Upside Down Glitch Effect */}
       <GlitchEffect isActive={isUpsideDownMode} />
-      <AudioController isActive={true} />
+      <AudioController isActive={true} isUpsideDownMode={isUpsideDownMode} />
 
       {/* Secret Code Flash Effect */}
       <AnimatePresence>

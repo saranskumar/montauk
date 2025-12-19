@@ -4,39 +4,49 @@ import { useEffect, useRef } from 'react';
 
 interface AudioControllerProps {
     isActive: boolean;
+    isUpsideDownMode?: boolean; // Control alien ambient sounds
     volume?: number;
 }
 
 declare global {
     interface Window {
-        playRetroSound: (type: 'type' | 'blip' | 'static' | 'success' | 'error' | 'click') => void;
+        playRetroSound: (type: 'type' | 'blip' | 'static' | 'success' | 'error' | 'click' | 'beep' | 'suspense') => void;
         setCalibrationAudio: (staticVol: number, beepRate: number) => void;
+        setDroneVolume: (volume: number) => void;
     }
 }
 
 const SOUND_ASSETS = {
-    drone: '/audio/mixkit-creepy-radio-frequency-2558.wav',
+    drone: '/audio/mixkit-underwater-transmitter-hum-2135.wav',
     type: '/audio/mixkit-on-or-off-light-switch-tap-2585.wav',
     blip: '/audio/mixkit-negative-tone-interface-tap-2569.wav',
     success: '/audio/mixkit-electronics-power-up-2602.wav',
     error: '/audio/mixkit-futuristic-device-fail-2939.wav',
     static: '/audio/mixkit-radio-waves-glitch-white-noise-1041.wav',
-    click: '/audio/mixkit-on-or-off-light-switch-tap-2585.wav', // Reusing tap for Geiger click
+    click: '/audio/mixkit-on-or-off-light-switch-tap-2585.wav',
+    // Upside Down ambient sounds
+    alienBlast: '/audio/mixkit-alien-blast-in-the-earth-2546.wav',
+    alienLanding: '/audio/mixkit-alien-spaceship-landing-slowly-2740.wav',
+    alienTech: '/audio/mixkit-alien-technology-button-3118.wav',
 };
 
-export default function AudioController({ isActive, volume = 0.3 }: AudioControllerProps) {
+export default function AudioController({ isActive, isUpsideDownMode = false, volume = 0.3 }: AudioControllerProps) {
     const audioContextRef = useRef<AudioContext | null>(null);
     const masterGainRef = useRef<GainNode | null>(null);
     const buffersRef = useRef<Record<string, AudioBuffer>>({});
 
     // Looping Nodes
     const droneNodeRef = useRef<AudioBufferSourceNode | null>(null);
+    const droneGainRef = useRef<GainNode | null>(null);
     const staticNodeRef = useRef<AudioBufferSourceNode | null>(null);
     const staticGainRef = useRef<GainNode | null>(null);
 
     // Calibration State
     const calibrationStateRef = useRef({ nextBeepTime: 0, beepRate: 0 });
     const animationFrameRef = useRef<number | null>(null);
+
+    // Upside Down ambient intervals
+    const alienIntervalsRef = useRef<number[]>([]);
 
     useEffect(() => {
         if (!isActive) return;
@@ -74,11 +84,12 @@ export default function AudioController({ isActive, volume = 0.3 }: AudioControl
                 src.buffer = buffersRef.current.drone;
                 src.loop = true;
                 const droneGain = ctx.createGain();
-                droneGain.gain.value = 0.4;
+                droneGain.gain.value = 0.15; // Quieter in normal reality
                 src.connect(droneGain);
                 droneGain.connect(masterGain);
                 src.start();
                 droneNodeRef.current = src;
+                droneGainRef.current = droneGain; // Store gain reference
                 console.log('[AudioController] Drone started');
             } catch (e) {
                 console.error('[AudioController] Error starting drone:', e);
@@ -221,6 +232,14 @@ export default function AudioController({ isActive, volume = 0.3 }: AudioControl
             }
         };
 
+        // Drone volume control
+        window.setDroneVolume = (volume) => {
+            if (droneGainRef.current) {
+                droneGainRef.current.gain.setTargetAtTime(volume, ctx.currentTime, 0.5);
+            }
+        };
+
+
         return () => {
             if (droneNodeRef.current) droneNodeRef.current.stop();
             if (staticNodeRef.current) staticNodeRef.current.stop();
@@ -228,6 +247,52 @@ export default function AudioController({ isActive, volume = 0.3 }: AudioControl
             ctx.close();
         };
     }, [isActive, volume]);
+
+    // Upside Down Alien Ambient Sounds
+    useEffect(() => {
+        if (!isUpsideDownMode || !audioContextRef.current) return;
+
+        const playAlienSound = (soundKey: string) => {
+            const ctx = audioContextRef.current;
+            const buffer = buffersRef.current[soundKey];
+            if (!ctx || !buffer) return;
+
+            const src = ctx.createBufferSource();
+            src.buffer = buffer;
+            const gain = ctx.createGain();
+            gain.gain.value = 0.3; // Medium volume for alien sounds
+            src.connect(gain);
+            gain.connect(masterGainRef.current!);
+            src.start();
+        };
+
+        // Set up staggered intervals for alien sounds
+        const blastInterval = window.setInterval(() => {
+            playAlienSound('alienBlast');
+        }, 12000); // Every 12 seconds
+
+        const landingInterval = window.setInterval(() => {
+            playAlienSound('alienLanding');
+        }, 18000); // Every 18 seconds
+
+        const techInterval = window.setInterval(() => {
+            playAlienSound('alienTech');
+        }, 8000); // Every 8 seconds
+
+        // Store intervals for cleanup
+        alienIntervalsRef.current = [blastInterval, landingInterval, techInterval];
+
+        // Play initial sounds with staggered timing
+        setTimeout(() => playAlienSound('alienTech'), 1000);
+        setTimeout(() => playAlienSound('alienBlast'), 3000);
+        setTimeout(() => playAlienSound('alienLanding'), 6000);
+
+        return () => {
+            // Clear all intervals on cleanup
+            alienIntervalsRef.current.forEach(interval => clearInterval(interval));
+            alienIntervalsRef.current = [];
+        };
+    }, [isUpsideDownMode]);
 
     return null;
 }
