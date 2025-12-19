@@ -1,0 +1,59 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
+import type { LogEntry } from '@/types/signal';
+
+interface SystemLogProps {
+    logs: LogEntry[];
+    isRiftMode: boolean;
+}
+
+export default function SystemLog({ logs, isRiftMode }: SystemLogProps) {
+    const logEndRef = useRef<HTMLDivElement>(null);
+
+    // Auto-scroll to bottom
+    useEffect(() => {
+        logEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [logs]);
+
+    const getLogColor = (type: LogEntry['type']) => {
+        switch (type) {
+            case 'success':
+                return 'text-green-400';
+            case 'warning':
+                return 'text-yellow-400';
+            case 'error':
+                return 'text-red-400';
+            default:
+                return isRiftMode ? 'text-rift-glow' : 'text-montauk-text-primary';
+        }
+    };
+
+    return (
+        <div className={`p-4 rounded-lg border-2 h-48 overflow-y-auto font-mono text-xs ${isRiftMode
+            ? 'bg-rift-bg/50 border-rift-border'
+            : 'bg-montauk-bg-secondary/50 border-montauk-border'
+            }`}>
+            <div className={`text-[10px] uppercase tracking-wider mb-2 ${isRiftMode ? 'text-rift-accent' : 'text-montauk-accent'
+                }`}>
+                SYSTEM LOG
+            </div>
+
+            <div className="space-y-1">
+                {logs.map((log) => (
+                    <div key={log.id} className={`${getLogColor(log.type)}`}>
+                        <span className="opacity-60">[{log.timestamp}]</span> {log.message}
+                    </div>
+                ))}
+                <div ref={logEndRef} />
+            </div>
+
+            {logs.length === 0 && (
+                <div className="text-center opacity-40 mt-8">
+                    No log entries
+                </div>
+            )}
+        </div>
+    );
+}
+
