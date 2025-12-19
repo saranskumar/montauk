@@ -15,7 +15,6 @@ import Scanlines from '@/components/effects/Scanlines';
 import Particles from '@/components/effects/Particles';
 import SignalCalibrator from '@/components/signal/SignalCalibrator';
 import SignalWaveWatermark from '@/components/SignalWaveWatermark';
-import ViralSpread from '@/components/effects/ViralSpread';
 import GlitchEffect from '@/components/effects/GlitchEffect';
 import AudioController from '@/components/effects/AudioController';
 
@@ -31,7 +30,6 @@ export default function Home() {
   const [booting, setBooting] = useState(true);
   const [isUpsideDownMode, setIsUpsideDownMode] = useState(false);
   const [glitchTrigger, setGlitchTrigger] = useState(0); // Trigger for transition effect
-  const [spreadOrigin, setSpreadOrigin] = useState({ x: 0, y: 0 });
   const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showSignalCalibrator, setShowSignalCalibrator] = useState(false);
@@ -77,10 +75,6 @@ export default function Home() {
 
       // U - Toggle Upside Down Mode
       if (e.key.toLowerCase() === 'u') {
-        // Use center of screen for keyboard shortcut
-        const x = window.innerWidth / 2;
-        const y = window.innerHeight / 2;
-        setSpreadOrigin({ x, y });
         setIsUpsideDownMode((prev) => !prev);
         setGlitchTrigger(prev => prev + 1);
       }
@@ -156,13 +150,6 @@ export default function Home() {
       {/* <div className="scanline-effect" /> */}
       {isUpsideDownMode && <Particles isUpsideDownMode={isUpsideDownMode} />}
 
-      {/* Viral Spread Effect */}
-      <ViralSpread
-        isActive={isUpsideDownMode}
-        originX={spreadOrigin.x}
-        originY={spreadOrigin.y}
-      />
-
       {/* Upside Down Glitch Effect */}
       <GlitchEffect isActive={isUpsideDownMode} />
       <AudioController isActive={true} isUpsideDownMode={isUpsideDownMode} />
@@ -205,8 +192,7 @@ export default function Home() {
         {/* Header */}
         <Header
           isUpsideDownMode={isUpsideDownMode}
-          onToggleUpsideDown={(x, y) => {
-            setSpreadOrigin({ x, y });
+          onToggleUpsideDown={() => {
             setIsUpsideDownMode((prev) => !prev);
             setGlitchTrigger(prev => prev + 1);
           }}

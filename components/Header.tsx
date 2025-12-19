@@ -1,11 +1,11 @@
 'use client';
 
-import { useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 import { Clock, Radio, Zap } from 'lucide-react';
 
 interface HeaderProps {
     isUpsideDownMode: boolean;
-    onToggleUpsideDown: (x: number, y: number) => void;
+    onToggleUpsideDown: () => void;
     onCreateIncident: () => void;
     threatStats: {
         CRITICAL: number;
@@ -26,19 +26,6 @@ export default function Header({
         const now = new Date();
         return now.toLocaleTimeString('en-US', { hour12: false });
     }, []);
-
-    const buttonRef = useRef<HTMLButtonElement>(null);
-
-    const handleToggle = () => {
-        if (buttonRef.current) {
-            const rect = buttonRef.current.getBoundingClientRect();
-            const x = rect.left + rect.width / 2;
-            const y = rect.top + rect.height / 2;
-            onToggleUpsideDown(x, y);
-        } else {
-            onToggleUpsideDown(0, 0);
-        }
-    };
 
     return (
         <header
@@ -85,8 +72,7 @@ export default function Header({
 
                         {/* UPSIDE DOWN Toggle */}
                         <button
-                            ref={buttonRef}
-                            onClick={handleToggle}
+                            onClick={onToggleUpsideDown}
                             className={`flex items-center gap-2 px-4 py-2 rounded font-bold text-sm uppercase tracking-wider transition-all ${isUpsideDownMode
                                 ? 'bg-upside-down-accent text-black hover:bg-upside-down-glow'
                                 : 'bg-hawkins-bg-secondary border border-hawkins-border text-hawkins-text-primary hover:border-hawkins-accent'

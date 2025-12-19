@@ -22,7 +22,7 @@ export default function ParticleDisintegration({
 }: ParticleDisintegrationProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const particlesRef = useRef<Particle[]>([]);
-    const animationRef = useRef<number>();
+    const animationRef = useRef<number | undefined>(undefined);
 
     // Adjust particle count based on performance
     const count = propCount ?? (performanceTier === 'high' ? 200 : performanceTier === 'medium' ? 100 : 50);
