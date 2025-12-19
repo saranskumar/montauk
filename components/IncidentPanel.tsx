@@ -6,14 +6,14 @@ import { Incident, IncidentStatus } from '@/types';
 
 interface IncidentPanelProps {
     incident: Incident;
-    isRiftMode: boolean;
+    isUpsideDownMode: boolean;
     onClose: () => void;
     onUpdateStatus: (id: string, status: IncidentStatus) => void;
 }
 
 export default function IncidentPanel({
     incident,
-    isRiftMode,
+    isUpsideDownMode,
     onClose,
     onUpdateStatus,
 }: IncidentPanelProps) {
@@ -47,16 +47,16 @@ export default function IncidentPanel({
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: '100%', opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className={`fixed top-0 right-0 h-full w-full max-w-lg z-50 overflow-y-auto border-l-2 ${isRiftMode
-                    ? 'bg-rift-bg border-rift-border'
-                    : 'bg-montauk-bg border-montauk-border'
+            className={`fixed top-0 right-0 h-full w-full max-w-lg z-50 overflow-y-auto border-l-2 ${isUpsideDownMode
+                    ? 'bg-upside-down-bg border-upside-down-border'
+                    : 'bg-hawkins-bg border-hawkins-border'
                 }`}
         >
             {/* Header */}
-            <div className={`sticky top-0 z-10 flex items-center justify-between p-4 border-b-2 ${isRiftMode ? 'bg-rift-bg border-rift-border' : 'bg-montauk-bg border-montauk-border'
+            <div className={`sticky top-0 z-10 flex items-center justify-between p-4 border-b-2 ${isUpsideDownMode ? 'bg-upside-down-bg border-upside-down-border' : 'bg-hawkins-bg border-hawkins-border'
                 }`}>
                 <div className="flex items-center gap-3">
-                    <span className={`font-mono font-bold ${isRiftMode ? 'text-rift-accent' : 'text-montauk-accent'}`}>
+                    <span className={`font-mono font-bold ${isUpsideDownMode ? 'text-upside-down-accent' : 'text-hawkins-accent'}`}>
                         {incident.id}
                     </span>
                     <span className={`px-2 py-0.5 border rounded text-xs font-bold ${getThreatColor(incident.threatLevel)}`}>
@@ -65,7 +65,7 @@ export default function IncidentPanel({
                 </div>
                 <button
                     onClick={onClose}
-                    className={`p-2 rounded hover:bg-white/10 transition-colors ${isRiftMode ? 'text-rift-glow' : 'text-montauk-text-primary'
+                    className={`p-2 rounded hover:bg-white/10 transition-colors ${isUpsideDownMode ? 'text-upside-down-glow' : 'text-hawkins-text-primary'
                         }`}
                 >
                     <X className="w-5 h-5" />
@@ -75,7 +75,7 @@ export default function IncidentPanel({
             {/* Content */}
             <div className="p-6 space-y-6">
                 {/* Title */}
-                <h2 className={`text-xl font-bold ${isRiftMode ? 'text-rift-glow' : 'text-montauk-text-primary'}`}>
+                <h2 className={`text-xl font-bold ${isUpsideDownMode ? 'text-upside-down-glow' : 'text-hawkins-text-primary'}`}>
                     {incident.title}
                 </h2>
 
@@ -85,50 +85,50 @@ export default function IncidentPanel({
                         icon={<MapPin className="w-4 h-4" />}
                         label="Location"
                         value={incident.location}
-                        isRiftMode={isRiftMode}
+                        isUpsideDownMode={isUpsideDownMode}
                     />
                     <InfoItem
                         icon={<User className="w-4 h-4" />}
                         label="Assigned To"
                         value={incident.assignee}
-                        isRiftMode={isRiftMode}
+                        isUpsideDownMode={isUpsideDownMode}
                     />
                     <InfoItem
                         icon={<Clock className="w-4 h-4" />}
                         label="Reported"
                         value={formatDate(incident.createdAt)}
-                        isRiftMode={isRiftMode}
+                        isUpsideDownMode={isUpsideDownMode}
                     />
                     <InfoItem
                         icon={<Tag className="w-4 h-4" />}
                         label="Tags"
                         value={incident.tags.join(', ')}
-                        isRiftMode={isRiftMode}
+                        isUpsideDownMode={isUpsideDownMode}
                     />
                 </div>
 
                 {/* Description */}
                 <div>
-                    <h3 className={`flex items-center gap-2 text-sm font-bold uppercase tracking-wider mb-2 ${isRiftMode ? 'text-rift-accent' : 'text-montauk-accent'
+                    <h3 className={`flex items-center gap-2 text-sm font-bold uppercase tracking-wider mb-2 ${isUpsideDownMode ? 'text-upside-down-accent' : 'text-hawkins-accent'
                         }`}>
                         <FileText className="w-4 h-4" />
                         Description
                     </h3>
-                    <p className={`text-sm leading-relaxed ${isRiftMode ? 'text-rift-glow/80' : 'text-montauk-text-primary/80'}`}>
+                    <p className={`text-sm leading-relaxed ${isUpsideDownMode ? 'text-upside-down-glow/80' : 'text-hawkins-text-primary/80'}`}>
                         {incident.description}
                     </p>
                 </div>
 
                 {/* Recommended Action */}
                 {incident.recommendedAction && (
-                    <div className={`p-4 rounded border-2 ${isRiftMode ? 'bg-rift-border/20 border-rift-border' : 'bg-montauk-border/20 border-montauk-border'
+                    <div className={`p-4 rounded border-2 ${isUpsideDownMode ? 'bg-upside-down-border/20 border-upside-down-border' : 'bg-hawkins-border/20 border-hawkins-border'
                         }`}>
-                        <h3 className={`flex items-center gap-2 text-sm font-bold uppercase tracking-wider mb-2 ${isRiftMode ? 'text-rift-danger' : 'text-montauk-danger'
+                        <h3 className={`flex items-center gap-2 text-sm font-bold uppercase tracking-wider mb-2 ${isUpsideDownMode ? 'text-upside-down-danger' : 'text-hawkins-danger'
                             }`}>
                             <AlertTriangle className="w-4 h-4" />
                             Recommended Action
                         </h3>
-                        <p className={`text-sm ${isRiftMode ? 'text-rift-glow/80' : 'text-montauk-text-primary/80'}`}>
+                        <p className={`text-sm ${isUpsideDownMode ? 'text-upside-down-glow/80' : 'text-hawkins-text-primary/80'}`}>
                             {incident.recommendedAction}
                         </p>
                     </div>
@@ -136,7 +136,7 @@ export default function IncidentPanel({
 
                 {/* Status Update Buttons */}
                 <div>
-                    <h3 className={`text-sm font-bold uppercase tracking-wider mb-3 ${isRiftMode ? 'text-rift-accent' : 'text-montauk-accent'
+                    <h3 className={`text-sm font-bold uppercase tracking-wider mb-3 ${isUpsideDownMode ? 'text-upside-down-accent' : 'text-hawkins-accent'
                         }`}>
                         Update Status
                     </h3>
@@ -146,12 +146,12 @@ export default function IncidentPanel({
                                 key={status}
                                 onClick={() => onUpdateStatus(incident.id, status)}
                                 className={`flex items-center justify-center gap-2 px-3 py-2 rounded border-2 text-sm font-bold uppercase transition-all ${incident.status === status
-                                        ? isRiftMode
-                                            ? 'bg-rift-accent text-black border-rift-accent'
-                                            : 'bg-montauk-accent text-black border-montauk-accent'
-                                        : isRiftMode
-                                            ? 'bg-transparent border-rift-border text-rift-glow hover:border-rift-accent'
-                                            : 'bg-transparent border-montauk-border text-montauk-text-primary hover:border-montauk-accent'
+                                        ? isUpsideDownMode
+                                            ? 'bg-upside-down-accent text-black border-upside-down-accent'
+                                            : 'bg-hawkins-accent text-black border-hawkins-accent'
+                                        : isUpsideDownMode
+                                            ? 'bg-transparent border-upside-down-border text-upside-down-glow hover:border-upside-down-accent'
+                                            : 'bg-transparent border-hawkins-border text-hawkins-text-primary hover:border-hawkins-accent'
                                     }`}
                             >
                                 {icon}
@@ -169,18 +169,18 @@ interface InfoItemProps {
     icon: React.ReactNode;
     label: string;
     value: string;
-    isRiftMode: boolean;
+    isUpsideDownMode: boolean;
 }
 
-function InfoItem({ icon, label, value, isRiftMode }: InfoItemProps) {
+function InfoItem({ icon, label, value, isUpsideDownMode }: InfoItemProps) {
     return (
         <div>
-            <div className={`flex items-center gap-1 text-[10px] uppercase tracking-wider mb-1 ${isRiftMode ? 'text-rift-accent/60' : 'text-montauk-text-dim'
+            <div className={`flex items-center gap-1 text-[10px] uppercase tracking-wider mb-1 ${isUpsideDownMode ? 'text-upside-down-accent/60' : 'text-hawkins-text-dim'
                 }`}>
                 {icon}
                 {label}
             </div>
-            <div className={`text-sm ${isRiftMode ? 'text-rift-glow' : 'text-montauk-text-primary'}`}>
+            <div className={`text-sm ${isUpsideDownMode ? 'text-upside-down-glow' : 'text-hawkins-text-primary'}`}>
                 {value}
             </div>
         </div>

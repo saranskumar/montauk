@@ -4,8 +4,8 @@ import { useMemo } from 'react';
 import { Clock, Radio, Zap } from 'lucide-react';
 
 interface HeaderProps {
-    isRiftMode: boolean;
-    onToggleRift: () => void;
+    isUpsideDownMode: boolean;
+    onToggleUpsideDown: () => void;
     onCreateIncident: () => void;
     threatStats: {
         CRITICAL: number;
@@ -16,8 +16,8 @@ interface HeaderProps {
 }
 
 export default function Header({
-    isRiftMode,
-    onToggleRift,
+    isUpsideDownMode,
+    onToggleUpsideDown,
     onCreateIncident,
     threatStats,
 }: HeaderProps) {
@@ -29,9 +29,9 @@ export default function Header({
 
     return (
         <header
-            className={`border-b-2 backdrop-blur-sm sticky top-0 z-40 transition-colors duration-500 ${isRiftMode
-                    ? 'border-rift-border bg-rift-bg/95'
-                    : 'border-montauk-border bg-montauk-bg/95'
+            className={`border-b-2 backdrop-blur-sm sticky top-0 z-40 transition-colors duration-500 ${isUpsideDownMode
+                    ? 'border-upside-down-border bg-upside-down-bg/95'
+                    : 'border-hawkins-border bg-hawkins-bg/95'
                 }`}
         >
             <div className="max-w-7xl mx-auto px-4 py-4">
@@ -40,16 +40,16 @@ export default function Header({
                     {/* Logo & Title */}
                     <div className="flex items-center gap-4">
                         <div
-                            className={`w-3 h-3 rounded-full ${isRiftMode ? 'bg-rift-accent animate-pulse' : 'bg-green-500'
+                            className={`w-3 h-3 rounded-full ${isUpsideDownMode ? 'bg-upside-down-accent animate-pulse' : 'bg-green-500'
                                 }`}
                         />
                         <div>
                             <h1
-                                className={`text-xl font-bold tracking-[0.2em] uppercase ${isRiftMode ? 'text-rift-accent glitch-text' : 'text-montauk-accent'
+                                className={`text-xl font-bold tracking-[0.2em] uppercase ${isUpsideDownMode ? 'text-upside-down-accent glitch-text' : 'text-hawkins-accent'
                                     }`}
-                                data-text="MONTAUK COMMAND"
+                                data-text="HAWKINS COMMAND"
                             >
-                                MONTAUK COMMAND
+                                HAWKINS COMMAND
                             </h1>
                             <p className="text-[10px] uppercase tracking-widest opacity-60">
                                 Incident Management System
@@ -61,33 +61,33 @@ export default function Header({
                     <div className="flex items-center gap-3">
                         {/* Clock */}
                         <div
-                            className={`flex items-center gap-2 px-3 py-1.5 rounded text-sm font-mono ${isRiftMode
-                                    ? 'bg-rift-bg border border-rift-border text-rift-accent'
-                                    : 'bg-montauk-bg-secondary border border-montauk-border text-montauk-text-primary'
+                            className={`flex items-center gap-2 px-3 py-1.5 rounded text-sm font-mono ${isUpsideDownMode
+                                    ? 'bg-upside-down-bg border border-upside-down-border text-upside-down-accent'
+                                    : 'bg-hawkins-bg-secondary border border-hawkins-border text-hawkins-text-primary'
                                 }`}
                         >
                             <Clock className="w-4 h-4" />
-                            <span className={isRiftMode ? 'animate-glitch' : ''}>{currentTime}</span>
+                            <span className={isUpsideDownMode ? 'animate-glitch' : ''}>{currentTime}</span>
                         </div>
 
-                        {/* Rift Mode Toggle */}
+                        {/* UPSIDE DOWN Toggle */}
                         <button
-                            onClick={onToggleRift}
-                            className={`flex items-center gap-2 px-4 py-2 rounded font-bold text-sm uppercase tracking-wider transition-all ${isRiftMode
-                                    ? 'bg-rift-accent text-black hover:bg-rift-glow'
-                                    : 'bg-montauk-bg-secondary border border-montauk-border text-montauk-text-primary hover:border-montauk-accent'
+                            onClick={onToggleUpsideDown}
+                            className={`flex items-center gap-2 px-4 py-2 rounded font-bold text-sm uppercase tracking-wider transition-all ${isUpsideDownMode
+                                    ? 'bg-upside-down-accent text-black hover:bg-upside-down-glow'
+                                    : 'bg-hawkins-bg-secondary border border-hawkins-border text-hawkins-text-primary hover:border-hawkins-accent'
                                 }`}
                         >
                             <Radio className="w-4 h-4" />
-                            {isRiftMode ? 'EXIT RIFT' : 'RIFT MODE'}
+                            {isUpsideDownMode ? 'EXIT UPSIDE DOWN' : 'UPSIDE DOWN'}
                         </button>
 
                         {/* Create Incident */}
                         <button
                             onClick={onCreateIncident}
-                            className={`flex items-center gap-2 px-4 py-2 rounded font-bold text-sm uppercase tracking-wider transition-all ${isRiftMode
-                                    ? 'bg-rift-danger text-white hover:bg-pink-400'
-                                    : 'bg-montauk-accent text-black hover:bg-montauk-accent-bright'
+                            className={`flex items-center gap-2 px-4 py-2 rounded font-bold text-sm uppercase tracking-wider transition-all ${isUpsideDownMode
+                                    ? 'bg-upside-down-danger text-white hover:bg-pink-400'
+                                    : 'bg-hawkins-accent text-black hover:bg-hawkins-accent-bright'
                                 }`}
                         >
                             <Zap className="w-4 h-4" />
@@ -101,22 +101,22 @@ export default function Header({
                     <ThreatBadge
                         level="CRITICAL"
                         count={threatStats.CRITICAL}
-                        isRiftMode={isRiftMode}
+                        isUpsideDownMode={isUpsideDownMode}
                     />
                     <ThreatBadge
                         level="SEVERE"
                         count={threatStats.SEVERE}
-                        isRiftMode={isRiftMode}
+                        isUpsideDownMode={isUpsideDownMode}
                     />
                     <ThreatBadge
                         level="MODERATE"
                         count={threatStats.MODERATE}
-                        isRiftMode={isRiftMode}
+                        isUpsideDownMode={isUpsideDownMode}
                     />
                     <ThreatBadge
                         level="LOW"
                         count={threatStats.LOW}
-                        isRiftMode={isRiftMode}
+                        isUpsideDownMode={isUpsideDownMode}
                     />
                 </div>
             </div>
@@ -127,21 +127,21 @@ export default function Header({
 interface ThreatBadgeProps {
     level: 'CRITICAL' | 'SEVERE' | 'MODERATE' | 'LOW';
     count: number;
-    isRiftMode: boolean;
+    isUpsideDownMode: boolean;
 }
 
-function ThreatBadge({ level, count, isRiftMode }: ThreatBadgeProps) {
+function ThreatBadge({ level, count, isUpsideDownMode }: ThreatBadgeProps) {
     const colors = {
-        CRITICAL: isRiftMode
+        CRITICAL: isUpsideDownMode
             ? 'bg-pink-900/50 border-pink-600 text-pink-300'
             : 'bg-red-900/50 border-red-600 text-red-300',
-        SEVERE: isRiftMode
+        SEVERE: isUpsideDownMode
             ? 'bg-purple-900/50 border-purple-600 text-purple-300'
             : 'bg-orange-900/50 border-orange-600 text-orange-300',
-        MODERATE: isRiftMode
+        MODERATE: isUpsideDownMode
             ? 'bg-indigo-900/50 border-indigo-600 text-indigo-300'
             : 'bg-yellow-900/50 border-yellow-600 text-yellow-300',
-        LOW: isRiftMode
+        LOW: isUpsideDownMode
             ? 'bg-blue-900/50 border-blue-600 text-blue-300'
             : 'bg-blue-900/50 border-blue-600 text-blue-300',
     };

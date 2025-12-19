@@ -6,11 +6,11 @@ interface ControlDialProps {
     label: string;
     value: number;
     onChange: (value: number) => void;
-    isRiftMode: boolean;
+    isUpsideDownMode: boolean;
     type?: 'dial' | 'slider';
 }
 
-export default function ControlDial({ label, value, onChange, isRiftMode, type = 'slider' }: ControlDialProps) {
+export default function ControlDial({ label, value, onChange, isUpsideDownMode, type = 'slider' }: ControlDialProps) {
     const [isDragging, setIsDragging] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -41,11 +41,11 @@ export default function ControlDial({ label, value, onChange, isRiftMode, type =
     return (
         <div className="space-y-2">
             <div className="flex justify-between items-center">
-                <label className={`text-xs uppercase tracking-wider font-bold ${isRiftMode ? 'text-rift-accent' : 'text-montauk-accent'
+                <label className={`text-xs uppercase tracking-wider font-bold ${isUpsideDownMode ? 'text-upside-down-accent' : 'text-hawkins-accent'
                     }`}>
                     {label}
                 </label>
-                <span className={`text-sm font-mono ${isRiftMode ? 'text-rift-glow' : 'text-montauk-text-primary'
+                <span className={`text-sm font-mono ${isUpsideDownMode ? 'text-upside-down-glow' : 'text-hawkins-text-primary'
                     }`}>
                     {Math.round(value)}
                 </span>
@@ -55,21 +55,21 @@ export default function ControlDial({ label, value, onChange, isRiftMode, type =
                 <div
                     ref={containerRef}
                     onMouseDown={handleMouseDown}
-                    className={`relative h-12 rounded border-2 cursor-pointer ${isRiftMode ? 'bg-rift-bg border-rift-border' : 'bg-montauk-bg border-montauk-border'
+                    className={`relative h-12 rounded border-2 cursor-pointer ${isUpsideDownMode ? 'bg-upside-down-bg border-upside-down-border' : 'bg-hawkins-bg border-hawkins-border'
                         }`}
                 >
                     {/* Track fill */}
                     <div
-                        className={`absolute inset-y-0 left-0 rounded ${isRiftMode ? 'bg-rift-accent/30' : 'bg-montauk-accent/30'
+                        className={`absolute inset-y-0 left-0 rounded ${isUpsideDownMode ? 'bg-upside-down-accent/30' : 'bg-hawkins-accent/30'
                             }`}
                         style={{ width: `${value}%` }}
                     />
 
                     {/* Thumb */}
                     <div
-                        className={`absolute top-1/2 -translate-y-1/2 w-4 h-8 rounded border-2 ${isRiftMode
-                                ? 'bg-rift-accent border-rift-glow'
-                                : 'bg-montauk-accent border-montauk-accent-bright'
+                        className={`absolute top-1/2 -translate-y-1/2 w-4 h-8 rounded border-2 ${isUpsideDownMode
+                                ? 'bg-upside-down-accent border-upside-down-glow'
+                                : 'bg-hawkins-accent border-hawkins-accent-bright'
                             } transition-all ${isDragging ? 'scale-110' : ''}`}
                         style={{ left: `calc(${value}% - 8px)` }}
                     />
@@ -79,7 +79,7 @@ export default function ControlDial({ label, value, onChange, isRiftMode, type =
                         {[0, 25, 50, 75, 100].map((tick) => (
                             <div
                                 key={tick}
-                                className={`w-px h-2 ${isRiftMode ? 'bg-rift-border' : 'bg-montauk-border'
+                                className={`w-px h-2 ${isUpsideDownMode ? 'bg-upside-down-border' : 'bg-hawkins-border'
                                     }`}
                             />
                         ))}
@@ -90,11 +90,11 @@ export default function ControlDial({ label, value, onChange, isRiftMode, type =
                 <div
                     ref={containerRef}
                     onMouseDown={handleMouseDown}
-                    className={`relative w-24 h-24 mx-auto rounded-full border-4 cursor-pointer ${isRiftMode ? 'bg-rift-bg border-rift-border' : 'bg-montauk-bg border-montauk-border'
+                    className={`relative w-24 h-24 mx-auto rounded-full border-4 cursor-pointer ${isUpsideDownMode ? 'bg-upside-down-bg border-upside-down-border' : 'bg-hawkins-bg border-hawkins-border'
                         }`}
                 >
                     <div
-                        className={`absolute top-1/2 left-1/2 w-1 h-8 origin-bottom ${isRiftMode ? 'bg-rift-accent' : 'bg-montauk-accent'
+                        className={`absolute top-1/2 left-1/2 w-1 h-8 origin-bottom ${isUpsideDownMode ? 'bg-upside-down-accent' : 'bg-hawkins-accent'
                             }`}
                         style={{
                             transform: `translate(-50%, -100%) rotate(${(value / 100) * 270 - 135}deg)`,

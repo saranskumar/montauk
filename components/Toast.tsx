@@ -8,10 +8,10 @@ import { Toast as ToastType } from '@/types';
 interface ToastProps {
     toast: ToastType;
     onDismiss: (id: string) => void;
-    isRiftMode: boolean;
+    isUpsideDownMode: boolean;
 }
 
-export default function Toast({ toast, onDismiss, isRiftMode }: ToastProps) {
+export default function Toast({ toast, onDismiss, isUpsideDownMode }: ToastProps) {
     useEffect(() => {
         const timer = setTimeout(() => {
             onDismiss(toast.id);
@@ -33,7 +33,7 @@ export default function Toast({ toast, onDismiss, isRiftMode }: ToastProps) {
     };
 
     const getStyles = () => {
-        if (isRiftMode) {
+        if (isUpsideDownMode) {
             return {
                 success: 'bg-purple-600 text-white border-purple-400',
                 warning: 'bg-pink-600 text-white border-pink-400',
@@ -74,10 +74,10 @@ export default function Toast({ toast, onDismiss, isRiftMode }: ToastProps) {
 interface ToastContainerProps {
     toasts: ToastType[];
     onDismiss: (id: string) => void;
-    isRiftMode: boolean;
+    isUpsideDownMode: boolean;
 }
 
-export function ToastContainer({ toasts, onDismiss, isRiftMode }: ToastContainerProps) {
+export function ToastContainer({ toasts, onDismiss, isUpsideDownMode }: ToastContainerProps) {
     return (
         <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
             <AnimatePresence mode="popLayout">
@@ -86,7 +86,7 @@ export function ToastContainer({ toasts, onDismiss, isRiftMode }: ToastContainer
                         key={toast.id}
                         toast={toast}
                         onDismiss={onDismiss}
-                        isRiftMode={isRiftMode}
+                        isUpsideDownMode={isUpsideDownMode}
                     />
                 ))}
             </AnimatePresence>

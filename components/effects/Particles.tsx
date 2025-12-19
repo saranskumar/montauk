@@ -1,15 +1,15 @@
 interface ParticlesProps {
-    isRiftMode: boolean;
+    isUpsideDownMode: boolean;
     count?: number;
 }
 
-export default function Particles({ isRiftMode, count = 15 }: ParticlesProps) {
+export default function Particles({ isUpsideDownMode, count = 15 }: ParticlesProps) {
     return (
         <>
             {Array.from({ length: count }).map((_, i) => (
                 <div
                     key={i}
-                    className={`particle ${isRiftMode ? 'particle--rift' : 'particle--montauk'}`}
+                    className={`particle ${isUpsideDownMode ? 'particle--upside-down' : 'particle--hawkins'}`}
                     style={{
                         left: `${Math.random() * 100}%`,
                         animationDuration: `${10 + Math.random() * 10}s`,

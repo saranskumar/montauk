@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 
 interface DecodedDataPanelProps {
     coherence: number;
-    isRiftMode: boolean;
+    isUpsideDownMode: boolean;
 }
 
 const MESSAGES = [
@@ -25,7 +25,7 @@ const MESSAGES = [
     },
 ];
 
-export default function DecodedDataPanel({ coherence, isRiftMode }: DecodedDataPanelProps) {
+export default function DecodedDataPanel({ coherence, isUpsideDownMode }: DecodedDataPanelProps) {
     // Select message based on coherence level
     const messageIndex = useMemo(() => {
         return Math.floor((coherence / 100) * MESSAGES.length) % MESSAGES.length;
@@ -42,11 +42,11 @@ export default function DecodedDataPanel({ coherence, isRiftMode }: DecodedDataP
     };
 
     return (
-        <div className={`p-4 rounded-lg border-2 font-mono text-sm ${isRiftMode
-                ? 'bg-rift-bg/50 border-rift-border text-rift-glow'
-                : 'bg-montauk-bg-secondary/50 border-montauk-border text-montauk-text-primary'
+        <div className={`p-4 rounded-lg border-2 font-mono text-sm ${isUpsideDownMode
+                ? 'bg-upside-down-bg/50 border-upside-down-border text-upside-down-glow'
+                : 'bg-hawkins-bg-secondary/50 border-hawkins-border text-hawkins-text-primary'
             } ${coherence < 30 ? 'animate-glitch' : ''}`}>
-            <div className={`text-xs uppercase tracking-wider mb-3 ${isRiftMode ? 'text-rift-accent' : 'text-montauk-accent'
+            <div className={`text-xs uppercase tracking-wider mb-3 ${isUpsideDownMode ? 'text-upside-down-accent' : 'text-hawkins-accent'
                 }`}>
                 [SIGNAL INTERCEPT]
             </div>
@@ -76,7 +76,7 @@ export default function DecodedDataPanel({ coherence, isRiftMode }: DecodedDataP
             </div>
 
             {coherence >= 80 && (
-                <div className={`mt-3 pt-3 border-t text-xs ${isRiftMode ? 'border-rift-border text-green-400' : 'border-montauk-border text-green-500'
+                <div className={`mt-3 pt-3 border-t text-xs ${isUpsideDownMode ? 'border-upside-down-border text-green-400' : 'border-hawkins-border text-green-500'
                     }`}>
                     ✓ SIGNAL DECODED SUCCESSFULLY
                 </div>

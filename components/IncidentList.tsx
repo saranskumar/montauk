@@ -11,7 +11,7 @@ interface IncidentListProps {
     filters: FilterState;
     selectedId: string | null;
     onSelectIncident: (incident: Incident) => void;
-    isRiftMode: boolean;
+    isUpsideDownMode: boolean;
 }
 
 export default function IncidentList({
@@ -19,7 +19,7 @@ export default function IncidentList({
     filters,
     selectedId,
     onSelectIncident,
-    isRiftMode,
+    isUpsideDownMode,
 }: IncidentListProps) {
     // Apply filters and sorting
     const filteredIncidents = useMemo(() => {
@@ -68,9 +68,9 @@ export default function IncidentList({
     if (filteredIncidents.length === 0) {
         return (
             <div
-                className={`flex flex-col items-center justify-center py-16 rounded-lg border-2 ${isRiftMode
-                        ? 'bg-rift-bg/30 border-rift-border text-rift-accent'
-                        : 'bg-montauk-bg-secondary/30 border-montauk-border text-montauk-text-dim'
+                className={`flex flex-col items-center justify-center py-16 rounded-lg border-2 ${isUpsideDownMode
+                        ? 'bg-upside-down-bg/30 border-upside-down-border text-upside-down-accent'
+                        : 'bg-hawkins-bg-secondary/30 border-hawkins-border text-hawkins-text-dim'
                     }`}
             >
                 <Inbox className="w-16 h-16 mb-4 opacity-50" />
@@ -87,7 +87,7 @@ export default function IncidentList({
                     <IncidentCard
                         key={incident.id}
                         incident={incident}
-                        isRiftMode={isRiftMode}
+                        isUpsideDownMode={isUpsideDownMode}
                         isSelected={selectedId === incident.id}
                         onClick={() => onSelectIncident(incident)}
                     />

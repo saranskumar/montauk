@@ -6,14 +6,14 @@ import { Incident } from '@/types';
 
 interface IncidentCardProps {
     incident: Incident;
-    isRiftMode: boolean;
+    isUpsideDownMode: boolean;
     onClick: () => void;
     isSelected: boolean;
 }
 
 export default function IncidentCard({
     incident,
-    isRiftMode,
+    isUpsideDownMode,
     onClick,
     isSelected,
 }: IncidentCardProps) {
@@ -27,13 +27,13 @@ export default function IncidentCard({
 
     const getThreatColor = (level: string) => {
         const colors = {
-            CRITICAL: isRiftMode
+            CRITICAL: isUpsideDownMode
                 ? 'bg-pink-600 text-white'
                 : 'bg-red-600 text-white',
-            SEVERE: isRiftMode
+            SEVERE: isUpsideDownMode
                 ? 'bg-purple-600 text-white'
                 : 'bg-orange-600 text-white',
-            MODERATE: isRiftMode
+            MODERATE: isUpsideDownMode
                 ? 'bg-indigo-600 text-white'
                 : 'bg-yellow-600 text-black',
             LOW: 'bg-blue-600 text-white',
@@ -78,12 +78,12 @@ export default function IncidentCard({
         p-4 rounded-lg border-2 cursor-pointer transition-all card-glow
         ${incident.threatLevel === 'CRITICAL' ? 'critical-pulse' : ''}
         ${isSelected
-                    ? isRiftMode
-                        ? 'bg-rift-bg border-rift-accent shadow-lg shadow-rift-accent/20'
-                        : 'bg-montauk-bg-secondary border-montauk-accent shadow-lg shadow-montauk-accent/20'
-                    : isRiftMode
-                        ? 'bg-rift-bg/50 border-rift-border hover:border-rift-accent/50'
-                        : 'bg-montauk-bg-secondary/50 border-montauk-border hover:border-montauk-accent/50'
+                    ? isUpsideDownMode
+                        ? 'bg-upside-down-bg border-upside-down-accent shadow-lg shadow-rift-accent/20'
+                        : 'bg-hawkins-bg-secondary border-hawkins-accent shadow-lg shadow-montauk-accent/20'
+                    : isUpsideDownMode
+                        ? 'bg-upside-down-bg/50 border-upside-down-border hover:border-upside-down-accent/50'
+                        : 'bg-hawkins-bg-secondary/50 border-hawkins-border hover:border-hawkins-accent/50'
                 }
       `}
         >
@@ -93,7 +93,7 @@ export default function IncidentCard({
                     <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${getThreatColor(incident.threatLevel)}`}>
                         {incident.threatLevel}
                     </span>
-                    <span className={`text-xs font-mono ${isRiftMode ? 'text-rift-accent' : 'text-montauk-accent'}`}>
+                    <span className={`text-xs font-mono ${isUpsideDownMode ? 'text-upside-down-accent' : 'text-hawkins-accent'}`}>
                         {incident.id}
                     </span>
                 </div>
@@ -104,7 +104,7 @@ export default function IncidentCard({
             </div>
 
             {/* Title */}
-            <h3 className={`text-base font-bold mb-2 ${isRiftMode ? 'text-rift-glow' : 'text-montauk-text-primary'}`}>
+            <h3 className={`text-base font-bold mb-2 ${isUpsideDownMode ? 'text-upside-down-glow' : 'text-hawkins-text-primary'}`}>
                 {incident.title}
             </h3>
 
@@ -130,9 +130,9 @@ export default function IncidentCard({
                     {incident.tags.slice(0, 3).map((tag) => (
                         <span
                             key={tag}
-                            className={`px-2 py-0.5 rounded text-[10px] ${isRiftMode
-                                    ? 'bg-rift-border text-rift-glow'
-                                    : 'bg-montauk-border text-montauk-text-dim'
+                            className={`px-2 py-0.5 rounded text-[10px] ${isUpsideDownMode
+                                    ? 'bg-upside-down-border text-upside-down-glow'
+                                    : 'bg-hawkins-border text-hawkins-text-dim'
                                 }`}
                         >
                             {tag}

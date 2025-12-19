@@ -7,13 +7,13 @@ import { NewIncidentInput, ThreatLevel } from '@/types';
 import { assignees, locations } from '@/data/sampleIncidents';
 
 interface CreateIncidentModalProps {
-    isRiftMode: boolean;
+    isUpsideDownMode: boolean;
     onClose: () => void;
     onSubmit: (data: NewIncidentInput) => void;
 }
 
 export default function CreateIncidentModal({
-    isRiftMode,
+    isUpsideDownMode,
     onClose,
     onSubmit,
 }: CreateIncidentModalProps) {
@@ -54,14 +54,14 @@ export default function CreateIncidentModal({
 
     const inputClass = `
     w-full px-3 py-2 rounded border-2 text-sm font-mono transition-colors
-    ${isRiftMode
-            ? 'bg-rift-bg border-rift-border text-rift-glow placeholder-rift-accent/50 focus:border-rift-accent'
-            : 'bg-montauk-bg border-montauk-border text-montauk-text-primary placeholder-montauk-text-dim focus:border-montauk-accent'
+    ${isUpsideDownMode
+            ? 'bg-upside-down-bg border-upside-down-border text-upside-down-glow placeholder-rift-accent/50 focus:border-upside-down-accent'
+            : 'bg-hawkins-bg border-hawkins-border text-hawkins-text-primary placeholder-montauk-text-dim focus:border-hawkins-accent'
         }
     focus:outline-none
   `;
 
-    const labelClass = `block text-xs uppercase tracking-wider font-bold mb-1 ${isRiftMode ? 'text-rift-accent' : 'text-montauk-accent'
+    const labelClass = `block text-xs uppercase tracking-wider font-bold mb-1 ${isUpsideDownMode ? 'text-upside-down-accent' : 'text-hawkins-accent'
         }`;
 
     return (
@@ -77,20 +77,20 @@ export default function CreateIncidentModal({
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 20 }}
                 onClick={(e) => e.stopPropagation()}
-                className={`w-full max-w-lg rounded-lg border-2 overflow-hidden ${isRiftMode ? 'bg-rift-bg border-rift-border' : 'bg-montauk-bg border-montauk-border'
+                className={`w-full max-w-lg rounded-lg border-2 overflow-hidden ${isUpsideDownMode ? 'bg-upside-down-bg border-upside-down-border' : 'bg-hawkins-bg border-hawkins-border'
                     }`}
             >
                 {/* Header */}
-                <div className={`flex items-center justify-between p-4 border-b-2 ${isRiftMode ? 'border-rift-border' : 'border-montauk-border'
+                <div className={`flex items-center justify-between p-4 border-b-2 ${isUpsideDownMode ? 'border-upside-down-border' : 'border-hawkins-border'
                     }`}>
-                    <h2 className={`flex items-center gap-2 text-lg font-bold ${isRiftMode ? 'text-rift-accent' : 'text-montauk-accent'
+                    <h2 className={`flex items-center gap-2 text-lg font-bold ${isUpsideDownMode ? 'text-upside-down-accent' : 'text-hawkins-accent'
                         }`}>
                         <Zap className="w-5 h-5" />
                         LOG NEW INCIDENT
                     </h2>
                     <button
                         onClick={onClose}
-                        className={`p-2 rounded hover:bg-white/10 transition-colors ${isRiftMode ? 'text-rift-glow' : 'text-montauk-text-primary'
+                        className={`p-2 rounded hover:bg-white/10 transition-colors ${isUpsideDownMode ? 'text-upside-down-glow' : 'text-hawkins-text-primary'
                             }`}
                     >
                         <X className="w-5 h-5" />
@@ -183,9 +183,9 @@ export default function CreateIncidentModal({
                             <button
                                 type="button"
                                 onClick={addTag}
-                                className={`px-4 rounded border-2 font-bold ${isRiftMode
-                                        ? 'border-rift-accent text-rift-accent hover:bg-rift-accent hover:text-black'
-                                        : 'border-montauk-accent text-montauk-accent hover:bg-montauk-accent hover:text-black'
+                                className={`px-4 rounded border-2 font-bold ${isUpsideDownMode
+                                        ? 'border-upside-down-accent text-upside-down-accent hover:bg-upside-down-accent hover:text-black'
+                                        : 'border-hawkins-accent text-hawkins-accent hover:bg-hawkins-accent hover:text-black'
                                     } transition-colors`}
                             >
                                 ADD
@@ -197,9 +197,9 @@ export default function CreateIncidentModal({
                                     <span
                                         key={tag}
                                         onClick={() => removeTag(tag)}
-                                        className={`px-2 py-1 rounded text-xs cursor-pointer ${isRiftMode
-                                                ? 'bg-rift-border text-rift-glow hover:bg-rift-danger'
-                                                : 'bg-montauk-border text-montauk-text-primary hover:bg-montauk-danger'
+                                        className={`px-2 py-1 rounded text-xs cursor-pointer ${isUpsideDownMode
+                                                ? 'bg-upside-down-border text-upside-down-glow hover:bg-upside-down-danger'
+                                                : 'bg-hawkins-border text-hawkins-text-primary hover:bg-hawkins-danger'
                                             } transition-colors`}
                                     >
                                         {tag} ×
@@ -214,18 +214,18 @@ export default function CreateIncidentModal({
                         <button
                             type="button"
                             onClick={onClose}
-                            className={`flex-1 px-4 py-2 rounded border-2 font-bold uppercase tracking-wider text-sm transition-colors ${isRiftMode
-                                    ? 'border-rift-border text-rift-glow hover:border-rift-accent'
-                                    : 'border-montauk-border text-montauk-text-primary hover:border-montauk-accent'
+                            className={`flex-1 px-4 py-2 rounded border-2 font-bold uppercase tracking-wider text-sm transition-colors ${isUpsideDownMode
+                                    ? 'border-upside-down-border text-upside-down-glow hover:border-upside-down-accent'
+                                    : 'border-hawkins-border text-hawkins-text-primary hover:border-hawkins-accent'
                                 }`}
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className={`flex-1 px-4 py-2 rounded font-bold uppercase tracking-wider text-sm transition-colors ${isRiftMode
-                                    ? 'bg-rift-accent text-black hover:bg-rift-glow'
-                                    : 'bg-montauk-accent text-black hover:bg-montauk-accent-bright'
+                            className={`flex-1 px-4 py-2 rounded font-bold uppercase tracking-wider text-sm transition-colors ${isUpsideDownMode
+                                    ? 'bg-upside-down-accent text-black hover:bg-upside-down-glow'
+                                    : 'bg-hawkins-accent text-black hover:bg-hawkins-accent-bright'
                                 }`}
                         >
                             Log Incident

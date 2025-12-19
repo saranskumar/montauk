@@ -5,10 +5,10 @@ import type { LogEntry } from '@/types/signal';
 
 interface SystemLogProps {
     logs: LogEntry[];
-    isRiftMode: boolean;
+    isUpsideDownMode: boolean;
 }
 
-export default function SystemLog({ logs, isRiftMode }: SystemLogProps) {
+export default function SystemLog({ logs, isUpsideDownMode }: SystemLogProps) {
     const logEndRef = useRef<HTMLDivElement>(null);
 
     // Auto-scroll to bottom
@@ -25,16 +25,16 @@ export default function SystemLog({ logs, isRiftMode }: SystemLogProps) {
             case 'error':
                 return 'text-red-400';
             default:
-                return isRiftMode ? 'text-rift-glow' : 'text-montauk-text-primary';
+                return isUpsideDownMode ? 'text-upside-down-glow' : 'text-hawkins-text-primary';
         }
     };
 
     return (
-        <div className={`p-4 rounded-lg border-2 h-48 overflow-y-auto font-mono text-xs ${isRiftMode
-            ? 'bg-rift-bg/50 border-rift-border'
-            : 'bg-montauk-bg-secondary/50 border-montauk-border'
+        <div className={`p-4 rounded-lg border-2 h-48 overflow-y-auto font-mono text-xs ${isUpsideDownMode
+            ? 'bg-upside-down-bg/50 border-upside-down-border'
+            : 'bg-hawkins-bg-secondary/50 border-hawkins-border'
             }`}>
-            <div className={`text-[10px] uppercase tracking-wider mb-2 ${isRiftMode ? 'text-rift-accent' : 'text-montauk-accent'
+            <div className={`text-[10px] uppercase tracking-wider mb-2 ${isUpsideDownMode ? 'text-upside-down-accent' : 'text-hawkins-accent'
                 }`}>
                 SYSTEM LOG
             </div>

@@ -14,6 +14,9 @@ import { ToastContainer, useToasts } from '@/components/Toast';
 import Scanlines from '@/components/effects/Scanlines';
 import Particles from '@/components/effects/Particles';
 import SignalCalibrator from '@/components/signal/SignalCalibrator';
+import SignalWaveWatermark from '@/components/SignalWaveWatermark';
+import GlitchEffect from '@/components/effects/GlitchEffect';
+import AudioController from '@/components/effects/AudioController';
 
 // Hooks
 import { useIncidents } from '@/hooks/useIncidents';
@@ -25,7 +28,7 @@ import type { Incident, FilterState, NewIncidentInput } from '@/types';
 export default function Home() {
   // State
   const [booting, setBooting] = useState(true);
-  const [isRiftMode, setIsRiftMode] = useState(false);
+  const [isUpsideDownMode, setIsUpsideDownMode] = useState(false);
   const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showSignalCalibrator, setShowSignalCalibrator] = useState(false);
@@ -45,7 +48,7 @@ export default function Home() {
     threatStats,
   } = useIncidents();
   const { toasts, showToast, dismissToast } = useToasts();
-  const secretTriggered = useSecretCode('MONTAUK');
+  const secretTriggered = useSecretCode('HAWKINS');
 
   // Handle secret code
   useEffect(() => {
@@ -69,9 +72,9 @@ export default function Home() {
         return;
       }
 
-      // R - Toggle Rift Mode
-      if (e.key.toLowerCase() === 'r') {
-        setIsRiftMode((prev) => !prev);
+      // U - Toggle Upside Down Mode
+      if (e.key.toLowerCase() === 'u') {
+        setIsUpsideDownMode((prev) => !prev);
       }
 
       // N - New Incident
@@ -96,15 +99,15 @@ export default function Home() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [booting]);
 
-  // Apply rift mode class to root
+  // Apply upside down mode class to root
   useEffect(() => {
     const root = document.documentElement;
-    if (isRiftMode) {
-      root.classList.add('rift-mode');
+    if (isUpsideDownMode) {
+      root.classList.add('upside-down-mode');
     } else {
-      root.classList.remove('rift-mode');
+      root.classList.remove('upside-down-mode');
     }
-  }, [isRiftMode]);
+  }, [isUpsideDownMode]);
 
   // Handlers
   const handleFilterChange = useCallback((updates: Partial<FilterState>) => {
@@ -137,13 +140,17 @@ export default function Home() {
 
   return (
     <div
-      className={`min-h-screen transition-colors duration-700 ${isRiftMode ? 'bg-rift-bg' : 'bg-montauk-bg'
+      className={`min-h-screen transition-colors duration-700 ${isUpsideDownMode ? 'bg-upside-down-bg' : 'bg-hawkins-bg'
         }`}
     >
       {/* Visual Effects */}
       {/* <Scanlines /> */}
       {/* <div className="scanline-effect" /> */}
-      {isRiftMode && <Particles isRiftMode={isRiftMode} />}
+      {isUpsideDownMode && <Particles isUpsideDownMode={isUpsideDownMode} />}
+
+      {/* Upside Down Glitch Effect */}
+      <GlitchEffect isActive={isUpsideDownMode} />
+      <AudioController isActive={true} />
 
       {/* Secret Code Flash Effect */}
       <AnimatePresence>
@@ -160,8 +167,8 @@ export default function Home() {
 
       {/* Header */}
       <Header
-        isRiftMode={isRiftMode}
-        onToggleRift={() => setIsRiftMode((prev) => !prev)}
+        isUpsideDownMode={isUpsideDownMode}
+        onToggleUpsideDown={() => setIsUpsideDownMode((prev) => !prev)}
         onCreateIncident={() => setShowCreateModal(true)}
         threatStats={threatStats}
       />
@@ -172,7 +179,7 @@ export default function Home() {
         <FilterBar
           filters={filters}
           onFilterChange={handleFilterChange}
-          isRiftMode={isRiftMode}
+          isUpsideDownMode={isUpsideDownMode}
         />
 
         {/* Two Column Layout */}
@@ -184,7 +191,7 @@ export default function Home() {
               filters={filters}
               selectedId={selectedIncident?.id || null}
               onSelectIncident={setSelectedIncident}
-              isRiftMode={isRiftMode}
+              isUpsideDownMode={isUpsideDownMode}
             />
           </div>
         </div>
@@ -204,7 +211,7 @@ export default function Home() {
             />
             <IncidentPanel
               incident={selectedIncident}
-              isRiftMode={isRiftMode}
+              isUpsideDownMode={isUpsideDownMode}
               onClose={() => setSelectedIncident(null)}
               onUpdateStatus={handleUpdateStatus}
             />
@@ -216,7 +223,7 @@ export default function Home() {
       <AnimatePresence>
         {showCreateModal && (
           <CreateIncidentModal
-            isRiftMode={isRiftMode}
+            isUpsideDownMode={isUpsideDownMode}
             onClose={() => setShowCreateModal(false)}
             onSubmit={handleCreateIncident}
           />
@@ -227,7 +234,7 @@ export default function Home() {
       <AnimatePresence>
         {showSignalCalibrator && (
           <SignalCalibrator
-            isRiftMode={isRiftMode}
+            isUpsideDownMode={isUpsideDownMode}
             onClose={() => setShowSignalCalibrator(false)}
           />
         )}
@@ -237,16 +244,19 @@ export default function Home() {
       <ToastContainer
         toasts={toasts}
         onDismiss={dismissToast}
-        isRiftMode={isRiftMode}
+        isUpsideDownMode={isUpsideDownMode}
       />
 
+      {/* Signal Wave Watermark */}
+      <SignalWaveWatermark isUpsideDownMode={isUpsideDownMode} />
+
       {/* Keyboard Shortcuts Hint */}
-      <div className={`fixed bottom-4 left-4 z-30 text-[10px] opacity-40 select-none flex gap-4 ${isRiftMode ? 'text-rift-glow' : 'text-montauk-text-dim'
+      <div className={`fixed bottom-4 left-4 z-30 text-[10px] opacity-40 select-none flex gap-4 ${isUpsideDownMode ? 'text-upside-down-glow' : 'text-hawkins-text-dim'
         }`}>
-        <span>PRESS 'R' TO TOGGLE RIFT MODE</span>
+        <span>PRESS 'U' TO TOGGLE UPSIDE DOWN MODE</span>
         <span>PRESS 'C' FOR SIGNAL CALIBRATOR</span>
         <span>PRESS 'N' TO LOG INCIDENT</span>
-        <span>TYPE 'MONTAUK' FOR TEMPORAL PURGE</span>
+        <span>TYPE 'HAWKINS' FOR TEMPORAL PURGE</span>
       </div>
     </div>
   );

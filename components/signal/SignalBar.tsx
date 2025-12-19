@@ -3,24 +3,24 @@ interface SignalBarProps {
     value: number;
     max: number;
     color: string;
-    isRiftMode: boolean;
+    isUpsideDownMode: boolean;
 }
 
-export default function SignalBar({ label, value, max, color, isRiftMode }: SignalBarProps) {
+export default function SignalBar({ label, value, max, color, isUpsideDownMode }: SignalBarProps) {
     const percentage = (value / max) * 100;
 
     return (
         <div className="space-y-1">
             <div className="flex justify-between items-center text-xs">
-                <span className={`font-mono uppercase tracking-wider ${isRiftMode ? 'text-rift-accent' : 'text-montauk-accent'
+                <span className={`font-mono uppercase tracking-wider ${isUpsideDownMode ? 'text-upside-down-accent' : 'text-hawkins-accent'
                     }`}>
                     {label}
                 </span>
-                <span className={`font-bold ${isRiftMode ? 'text-rift-glow' : 'text-montauk-text-primary'}`}>
+                <span className={`font-bold ${isUpsideDownMode ? 'text-upside-down-glow' : 'text-hawkins-text-primary'}`}>
                     {Math.round(value)}/{max}
                 </span>
             </div>
-            <div className={`h-6 rounded border-2 overflow-hidden ${isRiftMode ? 'bg-rift-bg border-rift-border' : 'bg-montauk-bg border-montauk-border'
+            <div className={`h-6 rounded border-2 overflow-hidden ${isUpsideDownMode ? 'bg-upside-down-bg border-upside-down-border' : 'bg-hawkins-bg border-hawkins-border'
                 }`}>
                 <div
                     className={`h-full transition-all duration-300 ${color}`}

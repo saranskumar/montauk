@@ -17,11 +17,11 @@ import SystemLog from './SystemLog';
 import StaticOverlay from './effects/StaticOverlay';
 
 interface SignalCalibratorProps {
-    isRiftMode: boolean;
+    isUpsideDownMode: boolean;
     onClose: () => void;
 }
 
-export default function SignalCalibrator({ isRiftMode, onClose }: SignalCalibratorProps) {
+export default function SignalCalibrator({ isUpsideDownMode, onClose }: SignalCalibratorProps) {
     const { state, controls, logs } = useSignalEngine();
     const [audioEnabled, setAudioEnabled] = useState(false);
     useAudioManager(state.coherence, state.noiseLevel, state.status, audioEnabled);
@@ -90,15 +90,15 @@ export default function SignalCalibrator({ isRiftMode, onClose }: SignalCalibrat
                 }}
                 exit={{ scale: 0.9, y: 20, opacity: 0 }}
                 onClick={(e) => e.stopPropagation()}
-                className={`w-full max-w-6xl max-h-[90vh] overflow-y-auto rounded-lg border-2 ${isRiftMode ? 'bg-rift-bg border-rift-border' : 'bg-montauk-bg border-montauk-border'
+                className={`w-full max-w-6xl max-h-[90vh] overflow-y-auto rounded-lg border-2 ${isUpsideDownMode ? 'bg-upside-down-bg border-upside-down-border' : 'bg-hawkins-bg border-hawkins-border'
                     } ${state.status === 'SIGNAL_LOST' ? 'animate-glitch' : ''}`}
             >
                 {/* Header */}
-                <div className={`sticky top-0 z-10 flex items-center justify-between p-4 border-b-2 ${isRiftMode ? 'bg-rift-bg border-rift-border' : 'bg-montauk-bg border-montauk-border'
+                <div className={`sticky top-0 z-10 flex items-center justify-between p-4 border-b-2 ${isUpsideDownMode ? 'bg-upside-down-bg border-upside-down-border' : 'bg-hawkins-bg border-hawkins-border'
                     }`}>
                     <div className="flex items-center gap-3">
-                        <Radio className={`w-6 h-6 ${isRiftMode ? 'text-rift-accent' : 'text-montauk-accent'}`} />
-                        <h2 className={`text-xl font-bold uppercase tracking-wider ${isRiftMode ? 'text-rift-accent' : 'text-montauk-accent'
+                        <Radio className={`w-6 h-6 ${isUpsideDownMode ? 'text-upside-down-accent' : 'text-hawkins-accent'}`} />
+                        <h2 className={`text-xl font-bold uppercase tracking-wider ${isUpsideDownMode ? 'text-upside-down-accent' : 'text-hawkins-accent'
                             }`}>
                             Dimensional Signal Calibrator
                         </h2>
@@ -106,9 +106,9 @@ export default function SignalCalibrator({ isRiftMode, onClose }: SignalCalibrat
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => setAudioEnabled(!audioEnabled)}
-                            className={`p-2 rounded transition-colors ${isRiftMode
-                                ? 'hover:bg-rift-border text-rift-glow'
-                                : 'hover:bg-montauk-border text-montauk-text-primary'
+                            className={`p-2 rounded transition-colors ${isUpsideDownMode
+                                ? 'hover:bg-upside-down-border text-upside-down-glow'
+                                : 'hover:bg-hawkins-border text-hawkins-text-primary'
                                 }`}
                             title="Toggle Audio (M)"
                         >
@@ -116,9 +116,9 @@ export default function SignalCalibrator({ isRiftMode, onClose }: SignalCalibrat
                         </button>
                         <button
                             onClick={controls.reset}
-                            className={`p-2 rounded transition-colors ${isRiftMode
-                                ? 'hover:bg-rift-border text-rift-glow'
-                                : 'hover:bg-montauk-border text-montauk-text-primary'
+                            className={`p-2 rounded transition-colors ${isUpsideDownMode
+                                ? 'hover:bg-upside-down-border text-upside-down-glow'
+                                : 'hover:bg-hawkins-border text-hawkins-text-primary'
                                 }`}
                             title="Reset"
                         >
@@ -126,9 +126,9 @@ export default function SignalCalibrator({ isRiftMode, onClose }: SignalCalibrat
                         </button>
                         <button
                             onClick={onClose}
-                            className={`p-2 rounded transition-colors ${isRiftMode
-                                ? 'hover:bg-rift-border text-rift-glow'
-                                : 'hover:bg-montauk-border text-montauk-text-primary'
+                            className={`p-2 rounded transition-colors ${isUpsideDownMode
+                                ? 'hover:bg-upside-down-border text-upside-down-glow'
+                                : 'hover:bg-hawkins-border text-hawkins-text-primary'
                                 }`}
                             title="Close (ESC)"
                         >
@@ -143,7 +143,7 @@ export default function SignalCalibrator({ isRiftMode, onClose }: SignalCalibrat
                     <CoherenceDisplay
                         coherence={state.coherence}
                         status={state.status}
-                        isRiftMode={isRiftMode}
+                        isUpsideDownMode={isUpsideDownMode}
                     />
 
                     {/* Signal Bars */}
@@ -152,22 +152,22 @@ export default function SignalCalibrator({ isRiftMode, onClose }: SignalCalibrat
                             label="Signal Strength"
                             value={state.signalStrength}
                             max={100}
-                            color={isRiftMode ? 'bg-gradient-to-r from-rift-accent to-rift-glow' : 'bg-gradient-to-r from-green-600 to-green-400'}
-                            isRiftMode={isRiftMode}
+                            color={isUpsideDownMode ? 'bg-gradient-to-r from-upside-down-accent to-upside-down-glow' : 'bg-gradient-to-r from-green-600 to-green-400'}
+                            isUpsideDownMode={isUpsideDownMode}
                         />
                         <SignalBar
                             label="Noise Level"
                             value={state.noiseLevel}
                             max={100}
-                            color={isRiftMode ? 'bg-gradient-to-r from-rift-danger to-pink-600' : 'bg-gradient-to-r from-red-600 to-orange-500'}
-                            isRiftMode={isRiftMode}
+                            color={isUpsideDownMode ? 'bg-gradient-to-r from-upside-down-danger to-pink-600' : 'bg-gradient-to-r from-red-600 to-orange-500'}
+                            isUpsideDownMode={isUpsideDownMode}
                         />
                     </div>
 
                     {/* Control Panel */}
-                    <div className={`p-4 rounded-lg border-2 ${isRiftMode ? 'bg-rift-bg/50 border-rift-border' : 'bg-montauk-bg-secondary/50 border-montauk-border'
+                    <div className={`p-4 rounded-lg border-2 ${isUpsideDownMode ? 'bg-upside-down-bg/50 border-upside-down-border' : 'bg-hawkins-bg-secondary/50 border-hawkins-border'
                         }`}>
-                        <h3 className={`text-sm uppercase tracking-wider font-bold mb-4 ${isRiftMode ? 'text-rift-accent' : 'text-montauk-accent'
+                        <h3 className={`text-sm uppercase tracking-wider font-bold mb-4 ${isUpsideDownMode ? 'text-upside-down-accent' : 'text-hawkins-accent'
                             }`}>
                             Signal Controls
                         </h3>
@@ -176,31 +176,31 @@ export default function SignalCalibrator({ isRiftMode, onClose }: SignalCalibrat
                                 label="Frequency"
                                 value={state.frequency}
                                 onChange={controls.setFrequency}
-                                isRiftMode={isRiftMode}
+                                isUpsideDownMode={isUpsideDownMode}
                             />
                             <ControlDial
                                 label="Phase Alignment"
                                 value={state.phase}
                                 onChange={controls.setPhase}
-                                isRiftMode={isRiftMode}
+                                isUpsideDownMode={isUpsideDownMode}
                             />
                             <ControlDial
                                 label="Noise Suppression"
                                 value={state.noiseSuppression}
                                 onChange={controls.setNoiseSuppression}
-                                isRiftMode={isRiftMode}
+                                isUpsideDownMode={isUpsideDownMode}
                             />
                         </div>
                     </div>
 
                     {/* Bottom Row: Data Panel and Log */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <DecodedDataPanel coherence={state.coherence} isRiftMode={isRiftMode} />
-                        <SystemLog logs={logs} isRiftMode={isRiftMode} />
+                        <DecodedDataPanel coherence={state.coherence} isUpsideDownMode={isUpsideDownMode} />
+                        <SystemLog logs={logs} isUpsideDownMode={isUpsideDownMode} />
                     </div>
 
                     {/* Keyboard Hints */}
-                    <div className={`text-center text-xs opacity-40 ${isRiftMode ? 'text-rift-glow' : 'text-montauk-text-dim'
+                    <div className={`text-center text-xs opacity-40 ${isUpsideDownMode ? 'text-upside-down-glow' : 'text-hawkins-text-dim'
                         }`}>
                         <div className="flex justify-center gap-4 flex-wrap">
                             <span>↑↓ FREQUENCY</span>
