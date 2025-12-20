@@ -47,11 +47,11 @@ export default function LiveUsers({ isUpsideDownMode }: LiveUsersProps) {
     const [isAddingCustom, setIsAddingCustom] = useState(false);
 
     // Theme colors
-    const primaryColor = isUpsideDownMode ? 'text-red-500' : 'text-green-500';
-    const dimColor = isUpsideDownMode ? 'text-red-900' : 'text-green-900';
-    const borderColor = isUpsideDownMode ? 'border-red-900' : 'border-green-900';
-    const glowColor = isUpsideDownMode ? 'shadow-red-500/20' : 'shadow-green-500/20';
-    const bgColor = isUpsideDownMode ? 'bg-red-950/10' : 'bg-green-950/10';
+    const primaryColor = isUpsideDownMode ? 'text-red-500' : 'text-amber-500';
+    const dimColor = isUpsideDownMode ? 'text-red-900' : 'text-amber-900';
+    const borderColor = isUpsideDownMode ? 'border-red-900' : 'border-amber-900';
+    const glowColor = isUpsideDownMode ? 'shadow-red-500/20' : 'shadow-amber-500/20';
+    const bgColor = isUpsideDownMode ? 'bg-red-950/10' : 'bg-amber-950/10';
 
     // Simulate scanning effect
     useEffect(() => {
@@ -159,10 +159,10 @@ export default function LiveUsers({ isUpsideDownMode }: LiveUsersProps) {
                                     <td className="px-2">{user.location}</td>
                                     <td className="px-2 text-center">{user.clearance}</td>
                                     <td className="px-2">
-                                        <span className={`px-1 py-0.5 rounded text-[10px] ${user.status === 'ACTIVE' ? 'bg-green-900/50 text-green-400' :
-                                                user.status === 'BREACH' ? 'bg-red-900/50 text-red-400 animate-pulse' :
-                                                    user.status === 'MIA' ? 'bg-yellow-900/50 text-yellow-400' :
-                                                        'bg-gray-800 text-gray-400'
+                                        <span className={`px-1 py-0.5 rounded text-[10px] ${user.status === 'ACTIVE' ? 'bg-amber-900/50 text-amber-400' :
+                                            user.status === 'BREACH' ? 'bg-red-900/50 text-red-400 animate-pulse' :
+                                                user.status === 'MIA' ? 'bg-yellow-900/50 text-yellow-400' :
+                                                    'bg-gray-800 text-gray-400'
                                             }`}>
                                             {user.status}
                                         </span>
@@ -198,7 +198,7 @@ export default function LiveUsers({ isUpsideDownMode }: LiveUsersProps) {
                                 value={traceName}
                                 onChange={(e) => setTraceName(e.target.value)}
                                 placeholder="ENTER NAME/ID..."
-                                className={`w-full bg-black/50 border ${borderColor} ${primaryColor} px-2 py-1 focus:outline-none focus:border-opacity-100 placeholder-opacity-30 placeholder-${isUpsideDownMode ? 'red-500' : 'green-500'}`}
+                                className={`w-full bg-black/50 border ${borderColor} ${primaryColor} px-2 py-1 focus:outline-none focus:border-opacity-100 placeholder-opacity-30 placeholder-${isUpsideDownMode ? 'red-500' : 'amber-500'}`}
                             />
                         </div>
 
@@ -290,7 +290,7 @@ export default function LiveUsers({ isUpsideDownMode }: LiveUsersProps) {
                     <div className="flex-1 p-2 font-mono text-xs overflow-hidden relative">
                         {/* Matrix rain effect simplified */}
                         <div className="absolute inset-0 opacity-5 pointer-events-none"
-                            style={{ backgroundImage: `linear-gradient(0deg, transparent 24%, ${isUpsideDownMode ? '#700' : '#070'} 25%, ${isUpsideDownMode ? '#700' : '#070'} 26%, transparent 27%, transparent 74%, ${isUpsideDownMode ? '#700' : '#070'} 75%, ${isUpsideDownMode ? '#700' : '#070'} 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, ${isUpsideDownMode ? '#700' : '#070'} 25%, ${isUpsideDownMode ? '#700' : '#070'} 26%, transparent 27%, transparent 74%, ${isUpsideDownMode ? '#700' : '#070'} 75%, ${isUpsideDownMode ? '#700' : '#070'} 76%, transparent 77%, transparent)`, backgroundSize: '30px 30px' }}
+                            style={{ backgroundImage: `linear-gradient(0deg, transparent 24%, ${isUpsideDownMode ? '#700' : '#A50'} 25%, ${isUpsideDownMode ? '#700' : '#A50'} 26%, transparent 27%, transparent 74%, ${isUpsideDownMode ? '#700' : '#A50'} 75%, ${isUpsideDownMode ? '#700' : '#A50'} 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, ${isUpsideDownMode ? '#700' : '#A50'} 25%, ${isUpsideDownMode ? '#700' : '#A50'} 26%, transparent 27%, transparent 74%, ${isUpsideDownMode ? '#700' : '#A50'} 75%, ${isUpsideDownMode ? '#700' : '#A50'} 76%, transparent 77%, transparent)`, backgroundSize: '30px 30px' }}
                         />
 
                         <div className="space-y-1 relative z-10">
@@ -323,7 +323,7 @@ export default function LiveUsers({ isUpsideDownMode }: LiveUsersProps) {
                             <span>88%</span>
                         </div>
                         <div className="h-2 bg-black border border-gray-800">
-                            <div className={`h-full w-[88%] ${isUpsideDownMode ? 'bg-red-600' : 'bg-green-600'} animate-pulse`}></div>
+                            <div className={`h-full w-[88%] ${isUpsideDownMode ? 'bg-red-600' : 'bg-amber-600'} animate-pulse`}></div>
                         </div>
                     </div>
                     <div>
@@ -332,7 +332,7 @@ export default function LiveUsers({ isUpsideDownMode }: LiveUsersProps) {
                             <span>640KB / 1024KB</span>
                         </div>
                         <div className="h-2 bg-black border border-gray-800">
-                            <div className={`h-full w-[62%] ${isUpsideDownMode ? 'bg-red-600' : 'bg-green-600'}`}></div>
+                            <div className={`h-full w-[62%] ${isUpsideDownMode ? 'bg-red-600' : 'bg-amber-600'}`}></div>
                         </div>
                     </div>
                 </div>

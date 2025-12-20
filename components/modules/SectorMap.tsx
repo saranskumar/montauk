@@ -21,10 +21,10 @@ export default function SectorMap({ isUpsideDownMode }: SectorMapProps) {
     const [radarRotation, setRadarRotation] = useState(0);
 
     // Theme colors
-    const primaryColor = isUpsideDownMode ? 'text-red-500' : 'text-green-500';
-    const borderColor = isUpsideDownMode ? 'border-red-900' : 'border-green-900';
-    const bgColor = isUpsideDownMode ? 'bg-red-950/10' : 'bg-green-950/10';
-    const gridColor = isUpsideDownMode ? 'border-red-900/30' : 'border-green-900/30';
+    const primaryColor = isUpsideDownMode ? 'text-red-500' : 'text-amber-500';
+    const borderColor = isUpsideDownMode ? 'border-red-900' : 'border-amber-900';
+    const bgColor = isUpsideDownMode ? 'bg-red-950/10' : 'bg-amber-950/10';
+    const gridColor = isUpsideDownMode ? 'border-red-900/30' : 'border-amber-900/30';
 
     // Rotation animation
     useEffect(() => {
@@ -66,16 +66,6 @@ export default function SectorMap({ isUpsideDownMode }: SectorMapProps) {
                     ))}
                 </div>
 
-                {/* Radar Sweep */}
-                <div
-                    className="absolute top-1/2 left-1/2 w-[150%] h-[150%] origin-bottom-left z-0 pointer-events-none"
-                    style={{
-                        transform: `translate(-50%, -50%) rotate(${radarRotation}deg)`,
-                        background: `conic-gradient(from 0deg, transparent 60%, ${isUpsideDownMode ? 'rgba(239, 68, 68, 0.2)' : 'rgba(34, 197, 94, 0.2)'} 100%)`,
-                        clipPath: 'polygon(50% 50%, 100% 0, 100% 100%, 0 100%, 0 0, 50% 0)' // Rough sector
-                    }}
-                />
-
                 {/* Points */}
                 {points.map(point => (
                     <motion.div
@@ -85,10 +75,10 @@ export default function SectorMap({ isUpsideDownMode }: SectorMapProps) {
                         onMouseEnter={() => setHoveredPoint(point)}
                         onMouseLeave={() => setHoveredPoint(null)}
                     >
-                        <div className={`w-full h-full rounded-full ${point.type === 'FRIENDLY' ? 'bg-green-500' :
-                                point.type === 'HOSTILE' ? 'bg-red-500' :
-                                    point.type === 'GATE' ? 'bg-purple-500 animate-pulse' :
-                                        'bg-amber-500'
+                        <div className={`w-full h-full rounded-full ${point.type === 'FRIENDLY' ? 'bg-amber-400' :
+                            point.type === 'HOSTILE' ? 'bg-red-500' :
+                                point.type === 'GATE' ? 'bg-purple-500 animate-pulse' :
+                                    'bg-amber-500'
                             }`} />
                         {/* Hover Ring */}
                         <div className={`absolute inset-0 rounded-full scale-150 border opacity-0 group-hover:opacity-100 transition-opacity ${point.type === 'HOSTILE' ? 'border-red-500' : 'border-white'
@@ -121,7 +111,7 @@ export default function SectorMap({ isUpsideDownMode }: SectorMapProps) {
                         <div>
                             <div className="opacity-50 mb-1">CLASSIFICATION</div>
                             <div className={`${hoveredPoint.type === 'HOSTILE' ? 'text-red-500 blink' :
-                                    hoveredPoint.type === 'FRIENDLY' ? 'text-green-400' : 'text-amber-400'
+                                hoveredPoint.type === 'FRIENDLY' ? 'text-green-400' : 'text-amber-400'
                                 }`}>
                                 {hoveredPoint.type}
                             </div>

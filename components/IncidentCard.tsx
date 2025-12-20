@@ -75,15 +75,15 @@ export default function IncidentCard({
             whileHover={{ scale: 1.01 }}
             onClick={onClick}
             className={`
-        p-4 rounded-lg border-2 cursor-pointer transition-all card-glow
-        ${incident.threatLevel === 'CRITICAL' ? 'critical-pulse' : ''}
+        p-4 rounded-lg border-2 cursor-pointer transition-all
+        ${incident.threatLevel === 'CRITICAL' ? 'border-red-600' : ''}
         ${isSelected
                     ? isUpsideDownMode
-                        ? 'bg-upside-down-bg border-upside-down-accent shadow-lg shadow-rift-accent/20'
-                        : 'bg-hawkins-bg-secondary border-hawkins-accent shadow-lg shadow-montauk-accent/20'
+                        ? 'bg-upside-down-bg border-red-500'
+                        : 'bg-hawkins-bg-secondary border-amber-500'
                     : isUpsideDownMode
-                        ? 'bg-upside-down-bg/50 border-upside-down-border hover:border-upside-down-accent/50'
-                        : 'bg-hawkins-bg-secondary/50 border-hawkins-border hover:border-hawkins-accent/50'
+                        ? 'bg-upside-down-bg/50 border-upside-down-border hover:border-red-500/50'
+                        : 'bg-hawkins-bg-secondary/50 border-hawkins-border hover:border-amber-500/50'
                 }
       `}
         >

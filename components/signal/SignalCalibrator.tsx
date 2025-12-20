@@ -74,8 +74,7 @@ export default function SignalCalibrator({ isUpsideDownMode, onClose, onComplete
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
             onClick={onClose}
         >
-            {/* Static overlay effect */}
-            <StaticOverlay noiseLevel={state.noiseLevel} isActive={state.coherence < 60} />
+
 
             <motion.div
                 initial={{ scale: 0.9, y: 20 }}

@@ -1,91 +1,71 @@
 # PROJECT HAWKINS: Incident Command Console
 
-> **IEEE TECHSORTIUM 2025 SUBMISSION**  
-> *Track strange events, threats, and Upside Down activity in Hawkins.*
+> **montauk**  
+> *A classified system to track strange events, threats, and Upside Down activity in Hawkins.*
 
-![Hawkins Command](/api/placeholder/800/400)
+## � Mission Briefing
+**Hawkins doesn't just need heroes. It needs operators.**
 
-## 📡 Deployment & Access
+This Incident Command Console is the central nervous system for Hawkins National Laboratory and local authorities. It allows operators to monitor the thinning veil between our world and the **Upside Down**, tracking anomalies in real-time before they escalate into town-wide catastrophes.
 
-### **Access Credentials**
-To access the classified console, you must complete the boot sequence and calibration.
-- **Protocol**: Manual Signal Trace
-- **Password**: `HAWKINS1983`
+Designed as a **cinematic, immersive experience**, this console operates entirely in the browser, simulating the look and feel of 1980s military hardware corrupted by interdimensional interference.
 
 ---
 
-## 📜 Problem Statement
-**Hawkins doesn't just need heroes. It needs developers.**
+## � Deployment & Access
 
-This project is a browser-based **Incident Command Console** used by Hawkins authorities to monitor the rising danger from the Upside Down. It serves as a centralized hub for tracking abnormal activity, logging threats, and coordinating the defense of our reality.
-
-Built as a single-page application (SPA), it operates entirely client-side with persistent storage, delivering a highly immersive, cinematic experience inspired by 1980s military terminals.
-
----
-
-## 🛠 Features
-
-### 🖥️ Core Functionality
-- **Incident List**: View all active threats in Hawkins. Sort by latest/oldest and filter by threat level (Critical, Severe, Moderate, Low).
-- **Incident Details**: Click any incident to open a "Classified File" view with full details, location, and recommended actions.
-- **Report New Incident**: A dedicated form to log new anomalies. Data is validated and added to the live feed immediately.
-- **Local Storage Persistence**: All data persists across page reloads—the fight doesn't end when you close the tab.
-
-### 🌌 The "Upside Down" Mode
-- **One-Click Toggle**: Press the `U` key or use the header toggle to switch realities.
-- **Visual Overhaul**: The interface transforms from "Standard Command" (Amber/Orange) to "Corrupted" (Red/Darkness).
-- **Glitch Effects**: Screen tearing, chromatic aberration, and atmospheric particles intensify.
-
-### 🎛️ Retro Terminal Experience
-- **Immersive Boot Sequence**: BIOS check, memory count, and "Signal Calibration" minigame before login.
-- **Audio Feedback**: Authentic 80s clicks, hums, and alarm sounds (Calibration required interaction).
-- **Mini HUDs**:
-  - **Signal Wave**: Real-time oscilloscope visualizing dimension coherence.
-  - **Threat Matrix**: Live dashboard of active threat counts.
-- **CRT Effects**: Scanlines, film grain, and screen curvature for that authentic 1984 feel.
+### **Authorized Access Required**
+To access the classified mainframes, you must bypass the initial security protocols:
+1. **Initialize Boot Sequence**: Wait for the BIOS to load classified protocols.
+2. **Calibrate Signal**: Use the sliders to stabilize the psychic frequency.
+3. **Enter Passcode**: `HAWKINS1983`
 
 ---
 
-## 🚀 Getting Started
+## 🕹️ System Capabilities
 
-This is a **Next.js** project. No external backend is required.
+### 1. **Real-Time Threat Tracking**
+Monitor the safety of Hawkins with a live feed of reported incidents.
+- **Incident Feed**: View active anomalies, ranging from "Lights Flickering" to "Demogorgon Sightings".
+- **Threat Classification**: Incidents are color-coded by severity (Critical, Severe, Moderate, Low).
+- **Status Management**: Mark threats as *Investigating*, *Contained*, or *Resolved* directly from the dashboard.
 
-### 1. Installation
-Cloning the repository and installing dependencies:
+### 2. **Dimensional Monitoring (The "Upside Down" Mode)**
+The console is sensitive to dimensional rifts.
+- **Toggle Reality**: Press **`U`** or use the specialized toggle switch to view the raw data from the Upside Down.
+- **Visual Corruption**: The interface shifts from standard Amber/Orange to a corrupted Red, revealing hidden details and increasing system instability (glitches, static).
 
-```bash
-git clone https://github.com/your-repo/project-hawkins.git
-cd project-hawkins
-npm install
-```
+### 3. **Signal & Personnel Surveillance**
+- **Signal Wave HUD**: A real-time oscilloscope in the bottom-right corner visualizes the stability of the gate.
+- **Threat Matrix**: An always-on HUD displaying the total count of active critical and severe threats.
+- **Live User Tracking**: Hit **`F2`** to track the status of key personnel (e.g., Hopper, Eleven, Dustin) in the field.
 
-### 2. Run Locally
-Start the development server:
+### 4. **Incident Management**
+- **Detailed Reports**: Open any incident file to view classified metadata, location tags, and recommended actions.
+- **Log New Threats**: Field agents can use the **Log Incident** form to submit new reports instantly.
+- **Persistent Data**: The system uses local storage to ensure your logs survive a browser refresh.
 
-```bash
-npm run dev
-```
+### 5. **Command Line Interface (CMD)**
+Access the terminal mainframe via the `CMD` tab for advanced control.
+- **System Commands**:
+  - `/HELP`: List all available commands.
+  - `/INCIDENT`: Launch incident reporting protocol.
+  - `/DOOM`: NEUTRALIZE ALL ACTIVE THREATS (Simulation Mode).
+  - `/STAT`: Display current threat matrix data.
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+### 6. **Operator Controls**
+- **Navigation**: Use **Arrow Keys (Left/Right)** to cycle through main screens.
+- **Reality Shift**: Press **`U`** to toggle Upside Down mode.
+- **Calibration**: Press **`C`** to toggle the Signal Calibrator tool.
+- **Quick Report**: Press **`N`** to open the New Incident form.
 
 ---
 
-## 💻 Tech Stack
-
-- **Framework**: Next.js 14 (App Router)
-- **Styling**: Tailwind CSS
-- **Animations**: Framer Motion
-- **Icons**: Lucide React
-- **Language**: TypeScript
-
----
-
-## ⚠️ Classified Information
-
-**Authorized Personnel Only.**
-If you see visual distortions or hear static interference, do not be alarmed. Reality fluctuations are expected within proximity of the Gate.
-
-> *"Strange things are happening in Hawkins. Again."*
+## 🎛️ Architecture
+**Single-Page Operating System**
+- **Client-Side Storage**: No external server required; data lives in your secure local instance.
+- **Responsive Interface**: Fully operational on desktop terminals and mobile field devices.
+- **Retro-Authenticity**: Built with CRT scanlines, chromatic aberration, and period-accurate typography.
 
 ---
 

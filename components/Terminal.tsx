@@ -5,7 +5,8 @@ import { Terminal as TerminalIcon } from 'lucide-react';
 
 interface TerminalProps {
     isUpsideDownMode: boolean;
-    onCommand?: (command: string) => void;
+    onCommand?: (command: string) => string | void;
+    embedded?: boolean;
 }
 
 interface HistoryEntry {
@@ -14,7 +15,7 @@ interface HistoryEntry {
     timestamp: Date;
 }
 
-export default function Terminal({ isUpsideDownMode, onCommand }: TerminalProps) {
+export default function Terminal({ isUpsideDownMode, onCommand, embedded = false }: TerminalProps) {
     const [input, setInput] = useState('');
     const [history, setHistory] = useState<HistoryEntry[]>([
         { command: 'SYSTEM INITIALIZED', output: 'HAWKINS COMMAND TERMINAL v1.0', timestamp: new Date() }
@@ -39,7 +40,7 @@ export default function Terminal({ isUpsideDownMode, onCommand }: TerminalProps)
         // Built-in commands
         switch (trimmed) {
             case 'HELP':
-                output = 'AVAILABLE COMMANDS: HELP, CLEAR, STATUS, U (UPSIDE DOWN), N (NEW INCIDENT), C (CALIBRATOR), HAWKINS (PURGE)';
+                output = 'COMMANDS: /INCIDENT (REPORT), /DOOM (NEUTRALIZE ALL), /STAT (METRICS), /HELP';
                 break;
             case 'CLEAR':
                 setHistory([]);
@@ -51,9 +52,15 @@ export default function Terminal({ isUpsideDownMode, onCommand }: TerminalProps)
             default:
                 // Pass to parent handler
                 if (onCommand) {
-                    onCommand(trimmed);
+                    const response = onCommand(trimmed);
+                    if (typeof response === 'string') {
+                        output = response;
+                    } else {
+                        output = `COMMAND EXECUTED: ${trimmed}`;
+                    }
+                } else {
+                    output = `UNKNOWN COMMAND: ${trimmed}`;
                 }
-                output = `COMMAND EXECUTED: ${trimmed}`;
         }
 
         setHistory(prev => [...prev, { command: trimmed, output, timestamp: new Date() }]);
@@ -87,11 +94,13 @@ export default function Terminal({ isUpsideDownMode, onCommand }: TerminalProps)
     };
 
     return (
-        <div className={`fixed bottom-0 left-0 right-0 z-40 border-t-2 backdrop-blur-sm transition-colors duration-500 ${isUpsideDownMode
-                ? 'border-upside-down-border bg-upside-down-bg/95'
-                : 'border-hawkins-border bg-hawkins-bg/95'
-            }`}>
-            <div className="max-w-7xl mx-auto px-4 py-3">
+        <div
+            onClick={() => inputRef.current?.focus()}
+            className={`${embedded ? 'h-full w-full flex flex-col cursor-text' : 'fixed bottom-0 left-0 right-0 z-40 border-t-2 backdrop-blur-sm'} transition-colors duration-500 ${isUpsideDownMode
+                ? `${embedded ? '' : 'border-upside-down-border bg-upside-down-bg/95'}`
+                : `${embedded ? '' : 'border-hawkins-border bg-hawkins-bg/95'}`
+                }`}>
+            <div className={`max-w-7xl mx-auto px-4 py-3 ${embedded ? 'flex-1 flex flex-col w-full' : ''}`}>
                 {/* Terminal Header */}
                 <div className="flex items-center gap-2 mb-2">
                     <TerminalIcon className={`w-4 h-4 ${isUpsideDownMode ? 'text-upside-down-accent' : 'text-hawkins-accent'}`} />
@@ -104,7 +113,7 @@ export default function Terminal({ isUpsideDownMode, onCommand }: TerminalProps)
                 {/* History Display */}
                 <div
                     ref={historyRef}
-                    className="h-24 overflow-y-auto mb-2 font-mono text-xs space-y-1 scrollbar-thin"
+                    className={`${embedded ? 'flex-1 min-h-0' : 'h-24'} overflow-y-auto mb-2 font-mono text-xs space-y-1 scrollbar-thin`}
                 >
                     {history.map((entry, i) => (
                         <div key={i} className="opacity-70">
@@ -112,7 +121,7 @@ export default function Terminal({ isUpsideDownMode, onCommand }: TerminalProps)
                                 {'>'} {entry.command}
                             </div>
                             {entry.output && (
-                                <div className={`ml-4 ${isUpsideDownMode ? 'text-upside-down-text' : 'text-hawkins-text-dim'}`}>
+                                <div className={`ml-4 mb-2 whitespace-pre-wrap ${isUpsideDownMode ? 'text-upside-down-text' : 'text-hawkins-text-dim'}`}>
                                     {entry.output}
                                 </div>
                             )}
@@ -131,10 +140,12 @@ export default function Terminal({ isUpsideDownMode, onCommand }: TerminalProps)
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
+                        onClick={(e) => e.stopPropagation()}
                         placeholder="TYPE COMMAND..."
+                        autoFocus
                         className={`flex-1 bg-transparent border-none outline-none font-mono text-sm uppercase ${isUpsideDownMode
-                                ? 'text-upside-down-text placeholder:text-upside-down-text/30'
-                                : 'text-hawkins-text-primary placeholder:text-hawkins-text-dim/30'
+                            ? 'text-upside-down-text placeholder:text-upside-down-text/30'
+                            : 'text-hawkins-text-primary placeholder:text-hawkins-text-dim/30'
                             }`}
                     />
                 </div>

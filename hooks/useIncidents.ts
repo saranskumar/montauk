@@ -72,6 +72,21 @@ export function useIncidents() {
         return count;
     }, [setIncidents]);
 
+    // Resolve ALL active impacts (DOOM command)
+    const resolveAll = useCallback(() => {
+        let count = 0;
+        setIncidents((prev) =>
+            prev.map((inc) => {
+                if (inc.status !== 'RESOLVED') {
+                    count++;
+                    return { ...inc, status: 'RESOLVED' as IncidentStatus };
+                }
+                return inc;
+            })
+        );
+        return count;
+    }, [setIncidents]);
+
     // Get threat stats
     const threatStats = incidents.reduce(
         (acc, inc) => {
@@ -88,6 +103,7 @@ export function useIncidents() {
         updateIncident,
         deleteIncident,
         resolveAllCritical,
+        resolveAll,
         threatStats,
         isLoaded,
     };

@@ -55,6 +55,7 @@ export default function Home() {
     addIncident,
     updateStatus,
     resolveAllCritical,
+    resolveAll,
     threatStats,
   } = useIncidents();
   const { toasts, showToast, dismissToast } = useToasts();
@@ -95,7 +96,25 @@ export default function Home() {
 
       // C - Signal Calibrator
       if (e.key.toLowerCase() === 'c') {
-        setShowSignalCalibrator(true);
+        setShowSignalCalibrator(prev => !prev);
+      }
+
+      // Arrow Keys - Navigate Tabs
+      if (e.key === 'ArrowRight') {
+        setActiveTab(prev => {
+          if (prev === 'INCIDENTS') return 'LIVE_USERS';
+          if (prev === 'LIVE_USERS') return 'MAPS_BEACON';
+          if (prev === 'MAPS_BEACON') return 'CMD';
+          return 'INCIDENTS';
+        });
+      }
+      if (e.key === 'ArrowLeft') {
+        setActiveTab(prev => {
+          if (prev === 'INCIDENTS') return 'CMD';
+          if (prev === 'LIVE_USERS') return 'INCIDENTS';
+          if (prev === 'MAPS_BEACON') return 'LIVE_USERS';
+          return 'MAPS_BEACON'; // CMD -> MAPS
+        });
       }
 
       // Escape - Close panels
@@ -122,33 +141,76 @@ export default function Home() {
 
   // Terminal command handler
   const handleTerminalCommand = useCallback((command: string) => {
-    switch (command) {
+    const cmd = command.toUpperCase();
+
+    // Slash Commands
+    if (cmd === '/HELP' || cmd === 'HELP') {
+      return `
+HAWKINS NATIONAL LABORATORY
+TERMINAL OS v1.984 - COMMAND REFERENCE
+========================================
+
+SYSTEM COMMANDS:
+  /INCIDENT   Launch the classified Incident Reporting Protocol.
+              Usage: Opens the Level 4 secure form overlay.
+
+  /STAT       Display current Threat Matrix analytics.
+              Returns: Critical/Severe/Moderate/Low counts.
+
+  /DOOM       [SIMULATION MODE] Execute Code Red neutralization protocols.
+              Effect: Resolves all active entities on the radar.
+              WARNING: For drill purposes only.
+
+  /HELP       Display this reference manual.
+
+SHORTCUTS (KEYBOARD):
+  [U]         Toggle Dimensional Rift (Upside Down Mode)
+  [C]         Toggle Signal Calibrator Overlay
+  [N]         Quick Launch Incident Report
+  [ARROWS]    Navigate System Tabs
+
+STATUS: ONLINE
+SECURE CONNECTION ESTABLISHED`;
+    }
+
+    if (cmd === '/INCIDENT') {
+      setShowCreateModal(true);
+      return 'LAUNCHING INCIDENT REPORT PROTOCOL...';
+    }
+
+    if (cmd === '/DOOM') {
+      const count = resolveAll();
+      return `DOOM PROTOCOL EXECUTED. ${count} THREATS NEUTRALIZED.`;
+    }
+
+    if (cmd === '/STAT') {
+      return `CRITICAL: ${threatStats.CRITICAL} | SEVERE: ${threatStats.SEVERE} | MODERATE: ${threatStats.MODERATE} | LOW: ${threatStats.LOW}`;
+    }
+
+    // Legacy/Shortcut Commands
+    switch (cmd) {
       case 'U':
       case 'UPSIDE':
       case 'UPSIDEDOWN':
         setIsUpsideDownMode(prev => !prev);
         setGlitchTrigger(prev => prev + 1);
-        break;
+        return 'REALITY SHIFT INITIATED...';
       case 'N':
       case 'NEW':
       case 'INCIDENT':
         setShowCreateModal(true);
-        break;
+        return 'OPENING FORM...';
       case 'C':
       case 'CALIBRATE':
-      case 'CALIBRATOR':
         setShowSignalCalibrator(true);
-        break;
+        return 'CALIBRATION STARTED...';
       case 'HAWKINS':
         const count = resolveAllCritical();
-        if (count > 0) {
-          showToast(`TEMPORAL PURGE: ${count} CRITICAL ANOMALIES NEUTRALIZED`, 'success');
-        } else {
-          showToast('TEMPORAL PURGE: NO ACTIVE CRITICAL ANOMALIES', 'info');
-        }
-        break;
+        return `TEMPORAL PURGE: ${count} CRITICAL ANOMALIES TARGETED.`;
+      default:
+        return `UNKNOWN COMMAND: ${command}`;
     }
-  }, [resolveAllCritical, showToast]);
+  }, [resolveAll, resolveAllCritical, threatStats]);
 
   // Handlers
   const handleFilterChange = useCallback((updates: Partial<FilterState>) => {
@@ -267,10 +329,11 @@ export default function Home() {
 
             {/* CMD TAB */}
             {activeTab === 'CMD' && (
-              <div className="h-[600px] border-2 border-dashed border-gray-800 bg-black p-2 relative">
+              <div className="h-[70vh] relative">
                 <Terminal
                   isUpsideDownMode={isUpsideDownMode}
                   onCommand={handleTerminalCommand}
+                  embedded={true}
                 />
               </div>
             )}
