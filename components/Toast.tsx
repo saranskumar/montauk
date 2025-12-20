@@ -38,14 +38,14 @@ export default function Toast({ toast, onDismiss, isUpsideDownMode }: ToastProps
                 success: 'bg-purple-600 text-white border-purple-400',
                 warning: 'bg-pink-600 text-white border-pink-400',
                 error: 'bg-red-600 text-white border-red-400',
-                info: 'bg-indigo-600 text-white border-indigo-400',
+                info: 'bg-gray-700 text-white border-gray-500', // Changed from Indigo
             }[toast.type];
         }
         return {
             success: 'bg-green-600 text-white border-green-400',
-            warning: 'bg-yellow-600 text-black border-yellow-400',
+            warning: 'bg-amber-600 text-black border-amber-400', // Changed from Yellow/Blue to Amber
             error: 'bg-red-600 text-white border-red-400',
-            info: 'bg-blue-600 text-white border-blue-400',
+            info: 'bg-gray-600 text-white border-gray-400', // Changed from Blue
         }[toast.type];
     };
 
@@ -109,4 +109,3 @@ export function useToasts() {
 
     return { toasts, showToast, dismissToast };
 }
-

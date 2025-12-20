@@ -19,9 +19,10 @@ import StaticOverlay from './effects/StaticOverlay';
 interface SignalCalibratorProps {
     isUpsideDownMode: boolean;
     onClose: () => void;
+    onComplete?: () => void;
 }
 
-export default function SignalCalibrator({ isUpsideDownMode, onClose }: SignalCalibratorProps) {
+export default function SignalCalibrator({ isUpsideDownMode, onClose, onComplete }: SignalCalibratorProps) {
     const { state, controls, logs } = useSignalEngine();
     const [audioEnabled, setAudioEnabled] = useState(false);
     useAudioManager(state.coherence, state.noiseLevel, state.status, audioEnabled);
@@ -214,4 +215,3 @@ export default function SignalCalibrator({ isUpsideDownMode, onClose }: SignalCa
         </motion.div>
     );
 }
-

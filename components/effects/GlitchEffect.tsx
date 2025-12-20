@@ -81,7 +81,7 @@ export default function GlitchEffect({ isActive }: GlitchEffectProps) {
             {glitchState === 'glitch' && (
                 <div className="absolute inset-0 z-50 mix-blend-exclusion">
                     <div className="absolute inset-0 bg-red-800 opacity-60 translate-x-2" />
-                    <div className="absolute inset-0 bg-cyan-900 opacity-60 -translate-x-2" />
+                    <div className="absolute inset-0 bg-amber-900 opacity-60 -translate-x-2" />
                     {/* Horizontal Lines */}
                     <div className="absolute inset-0 flex flex-col justify-around">
                         {Array.from({ length: 20 }).map((_, i) => (

@@ -34,9 +34,9 @@ export default function IncidentCard({
                 ? 'bg-purple-600 text-white'
                 : 'bg-orange-600 text-white',
             MODERATE: isUpsideDownMode
-                ? 'bg-indigo-600 text-white'
-                : 'bg-yellow-600 text-black',
-            LOW: 'bg-blue-600 text-white',
+                ? 'bg-red-500 text-white'
+                : 'bg-amber-600 text-black',
+            LOW: 'bg-yellow-600 text-black',
         };
         return colors[level as keyof typeof colors] || 'bg-gray-600 text-white';
     };
@@ -60,8 +60,8 @@ export default function IncidentCard({
         const styles = {
             ACTIVE: 'text-red-400',
             INVESTIGATING: 'text-yellow-400',
-            CONTAINED: 'text-blue-400',
-            RESOLVED: 'text-green-400',
+            CONTAINED: 'text-amber-400',
+            RESOLVED: 'text-yellow-600',
         };
         return styles[status as keyof typeof styles] || 'text-gray-400';
     };
@@ -131,8 +131,8 @@ export default function IncidentCard({
                         <span
                             key={tag}
                             className={`px-2 py-0.5 rounded text-[10px] ${isUpsideDownMode
-                                    ? 'bg-upside-down-border text-upside-down-glow'
-                                    : 'bg-hawkins-border text-hawkins-text-dim'
+                                ? 'bg-upside-down-border text-upside-down-glow'
+                                : 'bg-hawkins-border text-hawkins-text-dim'
                                 }`}
                         >
                             {tag}

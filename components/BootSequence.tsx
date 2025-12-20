@@ -105,7 +105,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
 
         // Load essential sounds
         Promise.all([
-            loadSound('beep', '/audio/mixkit-alarm-clock-beep-988.wav'), // Normal buzzer beep
+            loadSound('beep', '/audio/mixkit-censorship-beep-1082.wav'), // Normal buzzer beep
             loadSound('success', '/audio/mixkit-futuristic-bass-hit-2303.wav'),
             loadSound('error', '/audio/mixkit-negative-tone-interface-tap-2569.wav'), // Negative tone for errors
             loadSound('static', '/audio/mixkit-terror-radio-frequency-2566.wav'), // Terror radio for suspense
@@ -129,14 +129,15 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
         };
     }, []);
 
-    // Sound playback function
-    const playSound = (type: 'beep' | 'success' | 'error' | 'suspense') => {
+    // Sound playback function with optional pitch modulation
+    const playSound = (type: 'beep' | 'success' | 'error' | 'suspense', pitch: number = 1.0) => {
         const ctx = audioContextRef.current;
         const buffer = audioBuffersRef.current[type];
         if (!ctx || !buffer) return;
 
         const source = ctx.createBufferSource();
         source.buffer = buffer;
+        source.playbackRate.value = pitch; // Adjust frequency/pitch
         const gain = ctx.createGain();
         gain.gain.value = type === 'success' ? 0.6 : 0.3;
         source.connect(gain);
@@ -181,10 +182,15 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
         }
 
         if (beepRate > 0 && audioBuffersRef.current.beep) {
-            // Prevent extremely fast overlapping beeps (min 80ms)
-            const delay = Math.max(80, 400 - beepRate * 320);
+            // Faster acceleration: exponential curve, min 50ms for rapid beeping
+            const delay = Math.max(50, 350 - beepRate * beepRate * 300);
             beepIntervalRef.current = window.setInterval(() => {
-                playSound('beep'); // Use beep instead of click
+                // Stop beeps at 96% for longer blank gap before success
+                if (calibrationProgress < 99) {
+                    // Increase pitch as progress increases (1.0 to 2.0)
+                    const pitch = 1.0 + (calibrationProgress / 99);
+                    playSound('beep', pitch);
+                }
             }, delay);
         }
     };
@@ -390,8 +396,8 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
             // We are locking
             // Static fades out as progress goes 0->100
             staticVol = Math.max(0, 0.8 - (calibrationProgress / 100));
-            // Beep rate increases 0->1
-            beepRate = Math.max(0.1, calibrationProgress / 95);
+            // Beep rate increases exponentially, stop at 99% for blank beep gap
+            beepRate = calibrationProgress >= 99 ? 0 : Math.max(0.1, calibrationProgress / 99);
         }
 
         if (isCalibrated || calibrationProgress >= 100) {
@@ -679,12 +685,15 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
                                                     const value = e.target.value.toUpperCase();
                                                     setEncryptionKey(value);
                                                     setAuthError(false);
+
+                                                    if (value === correctKey) {
+                                                        playSound('success');
+                                                        setTimeout(() => setStage('connect'), 500);
+                                                    }
                                                 }}
                                                 onKeyDown={(e) => {
                                                     if (e.key === 'Enter') {
-                                                        if (encryptionKey === correctKey) {
-                                                            setTimeout(() => setStage('connect'), 500);
-                                                        } else {
+                                                        if (encryptionKey !== correctKey) {
                                                             setAuthError(true);
                                                             playSound('error'); // Negative tone for wrong password
                                                             setTimeout(() => setAuthError(false), 2000);

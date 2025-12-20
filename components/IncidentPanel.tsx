@@ -17,21 +17,21 @@ export default function IncidentPanel({
     onClose,
     onUpdateStatus,
 }: IncidentPanelProps) {
+    const getThreatColor = (level: string) => {
+        const colors = {
+            CRITICAL: 'text-red-400 border-red-400',
+            SEVERE: 'text-orange-400 border-orange-400',
+            MODERATE: 'text-amber-400 border-amber-400',
+            LOW: 'text-yellow-400 border-yellow-400',
+        };
+        return colors[level as keyof typeof colors] || 'text-gray-400 border-gray-400';
+    };
+
     const formatDate = (timestamp: number) => {
         return new Date(timestamp).toLocaleString('en-US', {
             dateStyle: 'medium',
             timeStyle: 'short',
         });
-    };
-
-    const getThreatColor = (level: string) => {
-        const colors = {
-            CRITICAL: 'text-red-400 border-red-400',
-            SEVERE: 'text-orange-400 border-orange-400',
-            MODERATE: 'text-yellow-400 border-yellow-400',
-            LOW: 'text-blue-400 border-blue-400',
-        };
-        return colors[level as keyof typeof colors] || 'text-gray-400 border-gray-400';
     };
 
     const statusButtons: { status: IncidentStatus; icon: React.ReactNode; label: string }[] = [
@@ -48,8 +48,8 @@ export default function IncidentPanel({
             exit={{ x: '100%', opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             className={`fixed top-0 right-0 h-full w-full max-w-lg z-50 overflow-y-auto border-l-2 ${isUpsideDownMode
-                    ? 'bg-upside-down-bg border-upside-down-border'
-                    : 'bg-hawkins-bg border-hawkins-border'
+                ? 'bg-upside-down-bg border-upside-down-border'
+                : 'bg-hawkins-bg border-hawkins-border'
                 }`}
         >
             {/* Header */}
@@ -146,12 +146,12 @@ export default function IncidentPanel({
                                 key={status}
                                 onClick={() => onUpdateStatus(incident.id, status)}
                                 className={`flex items-center justify-center gap-2 px-3 py-2 rounded border-2 text-sm font-bold uppercase transition-all ${incident.status === status
-                                        ? isUpsideDownMode
-                                            ? 'bg-upside-down-accent text-black border-upside-down-accent'
-                                            : 'bg-hawkins-accent text-black border-hawkins-accent'
-                                        : isUpsideDownMode
-                                            ? 'bg-transparent border-upside-down-border text-upside-down-glow hover:border-upside-down-accent'
-                                            : 'bg-transparent border-hawkins-border text-hawkins-text-primary hover:border-hawkins-accent'
+                                    ? isUpsideDownMode
+                                        ? 'bg-upside-down-accent text-black border-upside-down-accent'
+                                        : 'bg-hawkins-accent text-black border-hawkins-accent'
+                                    : isUpsideDownMode
+                                        ? 'bg-transparent border-upside-down-border text-upside-down-glow hover:border-upside-down-accent'
+                                        : 'bg-transparent border-hawkins-border text-hawkins-text-primary hover:border-hawkins-accent'
                                     }`}
                             >
                                 {icon}

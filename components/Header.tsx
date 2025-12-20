@@ -7,19 +7,12 @@ interface HeaderProps {
     isUpsideDownMode: boolean;
     onToggleUpsideDown: () => void;
     onCreateIncident: () => void;
-    threatStats: {
-        CRITICAL: number;
-        SEVERE: number;
-        MODERATE: number;
-        LOW: number;
-    };
 }
 
 export default function Header({
     isUpsideDownMode,
     onToggleUpsideDown,
     onCreateIncident,
-    threatStats,
 }: HeaderProps) {
     // Real-time clock
     const currentTime = useMemo(() => {
@@ -39,10 +32,6 @@ export default function Header({
                 <div className="flex items-center justify-between mb-4">
                     {/* Logo & Title */}
                     <div className="flex items-center gap-4">
-                        <div
-                            className={`w-3 h-3 rounded-full ${isUpsideDownMode ? 'bg-upside-down-accent animate-pulse' : 'bg-green-500'
-                                }`}
-                        />
                         <div>
                             <h1
                                 className={`text-xl font-bold tracking-[0.2em] uppercase ${isUpsideDownMode ? 'text-upside-down-accent glitch-text' : 'text-hawkins-accent'
@@ -96,64 +85,7 @@ export default function Header({
                     </div>
                 </div>
 
-                {/* Threat Stats Bar */}
-                <div className="grid grid-cols-4 gap-2">
-                    <ThreatBadge
-                        level="CRITICAL"
-                        count={threatStats.CRITICAL}
-                        isUpsideDownMode={isUpsideDownMode}
-                    />
-                    <ThreatBadge
-                        level="SEVERE"
-                        count={threatStats.SEVERE}
-                        isUpsideDownMode={isUpsideDownMode}
-                    />
-                    <ThreatBadge
-                        level="MODERATE"
-                        count={threatStats.MODERATE}
-                        isUpsideDownMode={isUpsideDownMode}
-                    />
-                    <ThreatBadge
-                        level="LOW"
-                        count={threatStats.LOW}
-                        isUpsideDownMode={isUpsideDownMode}
-                    />
-                </div>
             </div>
         </header>
     );
 }
-
-interface ThreatBadgeProps {
-    level: 'CRITICAL' | 'SEVERE' | 'MODERATE' | 'LOW';
-    count: number;
-    isUpsideDownMode: boolean;
-}
-
-function ThreatBadge({ level, count, isUpsideDownMode }: ThreatBadgeProps) {
-    const colors = {
-        CRITICAL: isUpsideDownMode
-            ? 'bg-pink-900/50 border-pink-600 text-pink-300'
-            : 'bg-red-900/50 border-red-600 text-red-300',
-        SEVERE: isUpsideDownMode
-            ? 'bg-purple-900/50 border-purple-600 text-purple-300'
-            : 'bg-orange-900/50 border-orange-600 text-orange-300',
-        MODERATE: isUpsideDownMode
-            ? 'bg-indigo-900/50 border-indigo-600 text-indigo-300'
-            : 'bg-yellow-900/50 border-yellow-600 text-yellow-300',
-        LOW: isUpsideDownMode
-            ? 'bg-blue-900/50 border-blue-600 text-blue-300'
-            : 'bg-blue-900/50 border-blue-600 text-blue-300',
-    };
-
-    return (
-        <div
-            className={`p-2 rounded text-center border ${colors[level]} ${level === 'CRITICAL' && count > 0 ? 'critical-pulse' : ''
-                }`}
-        >
-            <div className="text-[10px] font-mono opacity-75">{level}</div>
-            <div className="text-2xl font-bold">{count}</div>
-        </div>
-    );
-}
-

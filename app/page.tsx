@@ -17,6 +17,14 @@ import SignalCalibrator from '@/components/signal/SignalCalibrator';
 import SignalWaveWatermark from '@/components/SignalWaveWatermark';
 import GlitchEffect from '@/components/effects/GlitchEffect';
 import AudioController from '@/components/effects/AudioController';
+import Terminal from '@/components/Terminal';
+import TabNavigation from '@/components/TabNavigation';
+import RetroTerminalFrame from '@/components/layout/RetroTerminalFrame';
+import RetroMenu from '@/components/navigation/RetroMenu';
+import LiveUsers from '@/components/modules/LiveUsers';
+import SectorMap from '@/components/modules/SectorMap';
+import MiniSignalWave from '@/components/modules/MiniSignalWave';
+import MiniThreatStats from '@/components/modules/MiniThreatStats';
 
 // Hooks
 import { useIncidents } from '@/hooks/useIncidents';
@@ -29,7 +37,8 @@ export default function Home() {
   // State
   const [booting, setBooting] = useState(true);
   const [isUpsideDownMode, setIsUpsideDownMode] = useState(false);
-  const [glitchTrigger, setGlitchTrigger] = useState(0); // Trigger for transition effect
+  const [glitchTrigger, setGlitchTrigger] = useState(0);
+  const [activeTab, setActiveTab] = useState('INCIDENTS'); // Trigger for transition effect
   const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showSignalCalibrator, setShowSignalCalibrator] = useState(false);
@@ -111,6 +120,36 @@ export default function Home() {
     }
   }, [isUpsideDownMode]);
 
+  // Terminal command handler
+  const handleTerminalCommand = useCallback((command: string) => {
+    switch (command) {
+      case 'U':
+      case 'UPSIDE':
+      case 'UPSIDEDOWN':
+        setIsUpsideDownMode(prev => !prev);
+        setGlitchTrigger(prev => prev + 1);
+        break;
+      case 'N':
+      case 'NEW':
+      case 'INCIDENT':
+        setShowCreateModal(true);
+        break;
+      case 'C':
+      case 'CALIBRATE':
+      case 'CALIBRATOR':
+        setShowSignalCalibrator(true);
+        break;
+      case 'HAWKINS':
+        const count = resolveAllCritical();
+        if (count > 0) {
+          showToast(`TEMPORAL PURGE: ${count} CRITICAL ANOMALIES NEUTRALIZED`, 'success');
+        } else {
+          showToast('TEMPORAL PURGE: NO ACTIVE CRITICAL ANOMALIES', 'info');
+        }
+        break;
+    }
+  }, [resolveAllCritical, showToast]);
+
   // Handlers
   const handleFilterChange = useCallback((updates: Partial<FilterState>) => {
     setFilters((prev) => ({ ...prev, ...updates }));
@@ -141,13 +180,11 @@ export default function Home() {
   }
 
   return (
-    <div
-      className={`min-h-screen transition-colors duration-700 ${isUpsideDownMode ? 'bg-upside-down-bg' : 'bg-hawkins-bg'
-        }`}
+    <RetroTerminalFrame
+      isUpsideDownMode={isUpsideDownMode}
+      stage={isUpsideDownMode ? 'DIMENSION_BREACH' : 'ACTIVE_MONITORING'}
     >
       {/* Visual Effects */}
-      {/* <Scanlines /> */}
-      {/* <div className="scanline-effect" /> */}
       {isUpsideDownMode && <Particles isUpsideDownMode={isUpsideDownMode} />}
 
       {/* Upside Down Glitch Effect */}
@@ -167,125 +204,133 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* Main Content with Glitch Transition */}
-      <motion.div
-        key={glitchTrigger}
-        initial={{
-          x: 0,
-          y: 0,
-          rotate: 0,
-          scale: 1
-        }}
-        animate={{
-          x: [0, -20, 15, -10, 5, 0],
-          y: [0, 15, -20, 10, -5, 0],
-          rotate: [0, -2, 3, -1, 0],
-          scale: [1, 0.98, 1.02, 0.99, 1],
-        }}
-        transition={{
-          duration: 0.4,
-          times: [0, 0.2, 0.4, 0.6, 0.8, 1],
-          ease: "easeInOut"
-        }}
-        className="relative"
-      >
-        {/* Header */}
-        <Header
-          isUpsideDownMode={isUpsideDownMode}
-          onToggleUpsideDown={() => {
-            setIsUpsideDownMode((prev) => !prev);
-            setGlitchTrigger(prev => prev + 1);
-          }}
-          onCreateIncident={() => setShowCreateModal(true)}
-          threatStats={threatStats}
-        />
+      {/* App Layout Container */}
+      <div className="flex flex-col h-full overflow-hidden">
 
-        {/* Main Content */}
-        <main className="max-w-7xl mx-auto px-4 py-6">
-          {/* Filters */}
-          <FilterBar
-            filters={filters}
-            onFilterChange={handleFilterChange}
+        {/* Scrollable Main Content Area */}
+        <div className="flex-1 overflow-y-auto custom-scrollbar pb-4 relative z-10">
+          {/* Header */}
+          <Header
             isUpsideDownMode={isUpsideDownMode}
+            onToggleUpsideDown={() => {
+              setIsUpsideDownMode((prev) => !prev);
+              setGlitchTrigger(prev => prev + 1);
+            }}
+            onCreateIncident={() => setShowCreateModal(true)}
           />
 
-          {/* Two Column Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Incident List */}
-            <div className={`lg:col-span-2 ${selectedIncident ? 'lg:col-span-2' : 'lg:col-span-3'}`}>
-              <IncidentList
-                incidents={incidents}
-                filters={filters}
-                selectedId={selectedIncident?.id || null}
-                onSelectIncident={setSelectedIncident}
-                isUpsideDownMode={isUpsideDownMode}
-              />
-            </div>
-          </div>
-        </main>
+          {/* Retro Menu */}
+          <RetroMenu
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            isUpsideDownMode={isUpsideDownMode}
+            onCmdClick={() => {
+              const terminalInput = document.querySelector('input[placeholder="TYPE COMMAND..."]') as HTMLInputElement;
+              if (terminalInput) terminalInput.focus();
+            }}
+          />
 
-        {/* Incident Details Panel */}
-        <AnimatePresence>
-          {selectedIncident && (
-            <>
-              {/* Backdrop */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setSelectedIncident(null)}
-                className="fixed inset-0 bg-black/50 z-40"
-              />
+          {/* Main Content View */}
+          <main className="max-w-7xl mx-auto px-4 py-6 text-left min-h-[400px]">
+            {/* INCIDENTS TAB */}
+            {activeTab === 'INCIDENTS' && (
+              <>
+                <FilterBar
+                  filters={filters}
+                  onFilterChange={handleFilterChange}
+                  isUpsideDownMode={isUpsideDownMode}
+                />
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <div className={`lg:col-span-2 ${selectedIncident ? 'lg:col-span-2' : 'lg:col-span-3'}`}>
+                    <IncidentList
+                      incidents={incidents}
+                      filters={filters}
+                      selectedId={selectedIncident?.id || null}
+                      onSelectIncident={setSelectedIncident}
+                      isUpsideDownMode={isUpsideDownMode}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* LIVE USERS TAB */}
+            {activeTab === 'LIVE_USERS' && (
+              <LiveUsers isUpsideDownMode={isUpsideDownMode} />
+            )}
+
+            {/* MAPS BEACON TAB */}
+            {activeTab === 'MAPS_BEACON' && (
+              <SectorMap isUpsideDownMode={isUpsideDownMode} />
+            )}
+
+            {/* CMD TAB */}
+            {activeTab === 'CMD' && (
+              <div className="h-[600px] border-2 border-dashed border-gray-800 bg-black p-2 relative">
+                <Terminal
+                  isUpsideDownMode={isUpsideDownMode}
+                  onCommand={handleTerminalCommand}
+                />
+              </div>
+            )}
+          </main>
+
+          {/* Incident Details Panel */}
+          <AnimatePresence>
+            {selectedIncident && (
               <IncidentPanel
                 incident={selectedIncident}
-                isUpsideDownMode={isUpsideDownMode}
                 onClose={() => setSelectedIncident(null)}
                 onUpdateStatus={handleUpdateStatus}
+                isUpsideDownMode={isUpsideDownMode}
               />
-            </>
-          )}
-        </AnimatePresence>
+            )}
+          </AnimatePresence>
+        </div>
 
-        {/* Create Incident Modal */}
-        <AnimatePresence>
-          {showCreateModal && (
-            <CreateIncidentModal
-              isUpsideDownMode={isUpsideDownMode}
-              onClose={() => setShowCreateModal(false)}
-              onSubmit={handleCreateIncident}
-            />
-          )}
-        </AnimatePresence>
+        {/* Mini HUD Graph - Fixed Bottom Right */}
+        <MiniSignalWave isUpsideDownMode={isUpsideDownMode} />
 
-        {/* Signal Calibrator */}
-        <AnimatePresence>
-          {showSignalCalibrator && (
-            <SignalCalibrator
-              isUpsideDownMode={isUpsideDownMode}
-              onClose={() => setShowSignalCalibrator(false)}
-            />
-          )}
-        </AnimatePresence>
-
-        {/* Toast Notifications */}
-        <ToastContainer
-          toasts={toasts}
-          onDismiss={dismissToast}
+        {/* Mini Threat Stats - Fixed Bottom Right (Left of Graph) */}
+        <MiniThreatStats
+          threatStats={threatStats}
           isUpsideDownMode={isUpsideDownMode}
         />
 
-        {/* Signal Wave Watermark */}
-        <SignalWaveWatermark isUpsideDownMode={isUpsideDownMode} />
+      </div>
 
-        {/* Keyboard Shortcuts Hint */}
-        <div className={`fixed bottom-4 left-4 z-30 text-[10px] opacity-40 select-none flex gap-4 ${isUpsideDownMode ? 'text-upside-down-glow' : 'text-hawkins-text-dim'
-          }`}>
-          <span>PRESS 'U' TO TOGGLE UPSIDE DOWN MODE</span>
-          <span>PRESS 'C' FOR SIGNAL CALIBRATOR</span>
-          <span>PRESS 'N' TO LOG INCIDENT</span>
-          <span>TYPE 'HAWKINS' FOR TEMPORAL PURGE</span>
-        </div>
-      </motion.div>
-    </div>
+      {/* Modals & Overlays */}
+      <AnimatePresence>
+        {showCreateModal && (
+          <CreateIncidentModal
+            onClose={() => setShowCreateModal(false)}
+            onSubmit={handleCreateIncident}
+            isUpsideDownMode={isUpsideDownMode}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showSignalCalibrator && (
+          <SignalCalibrator
+            onComplete={() => {
+              setShowSignalCalibrator(false);
+              showToast('SIGNAL CALIBRATION COMPLETE: 98.4%', 'success');
+            }}
+            onClose={() => setShowSignalCalibrator(false)}
+            isUpsideDownMode={isUpsideDownMode}
+          />
+        )}
+      </AnimatePresence>
+
+      <ToastContainer toasts={toasts} onDismiss={dismissToast} isUpsideDownMode={isUpsideDownMode} />
+
+      {/* Background Watermark */}
+      <div className="fixed inset-0 pointer-events-none z-0 opacity-10">
+        <SignalWaveWatermark isUpsideDownMode={isUpsideDownMode} />
+      </div>
+
+    </RetroTerminalFrame>
   );
 }

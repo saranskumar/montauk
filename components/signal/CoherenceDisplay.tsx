@@ -12,9 +12,9 @@ export default function CoherenceDisplay({ coherence, status, isUpsideDownMode }
             case 'SEARCHING':
                 return isUpsideDownMode ? 'text-yellow-400' : 'text-yellow-500';
             case 'PATTERN_DETECTED':
-                return isUpsideDownMode ? 'text-blue-400' : 'text-blue-500';
+                return isUpsideDownMode ? 'text-orange-400' : 'text-amber-500';
             case 'SIGNAL_LOCK':
-                return isUpsideDownMode ? 'text-green-400' : 'text-green-500';
+                return isUpsideDownMode ? 'text-red-400' : 'text-yellow-500';
             case 'SIGNAL_LOST':
                 return isUpsideDownMode ? 'text-red-400' : 'text-red-500';
         }
