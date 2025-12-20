@@ -249,8 +249,30 @@ export default function AudioController({ isActive, isUpsideDownMode = false, vo
     }, [isActive, volume]);
 
     // Upside Down Alien Ambient Sounds
+    const alienSourcesRef = useRef<AudioBufferSourceNode[]>([]);
+
     useEffect(() => {
-        if (!isUpsideDownMode || !audioContextRef.current) return;
+        // Cleanup function to stop all alien sounds immediately
+        const cleanupAlienSounds = () => {
+            alienSourcesRef.current.forEach(source => {
+                try {
+                    source.stop();
+                } catch (e) {
+                    // Ignore errors if already stopped
+                }
+            });
+            alienSourcesRef.current = [];
+
+            if (alienIntervalsRef.current.length > 0) {
+                alienIntervalsRef.current.forEach(interval => clearInterval(interval));
+                alienIntervalsRef.current = [];
+            }
+        };
+
+        if (!isUpsideDownMode || !audioContextRef.current) {
+            cleanupAlienSounds();
+            return;
+        }
 
         const playAlienSound = (soundKey: string) => {
             const ctx = audioContextRef.current;
@@ -264,6 +286,14 @@ export default function AudioController({ isActive, isUpsideDownMode = false, vo
             src.connect(gain);
             gain.connect(masterGainRef.current!);
             src.start();
+
+            // Track source for cleanup
+            alienSourcesRef.current.push(src);
+
+            // Remove from tracker when done to keep array small
+            src.onended = () => {
+                alienSourcesRef.current = alienSourcesRef.current.filter(s => s !== src);
+            };
         };
 
         // Set up staggered intervals for alien sounds
@@ -283,14 +313,16 @@ export default function AudioController({ isActive, isUpsideDownMode = false, vo
         alienIntervalsRef.current = [blastInterval, landingInterval, techInterval];
 
         // Play initial sounds with staggered timing
-        setTimeout(() => playAlienSound('alienTech'), 1000);
-        setTimeout(() => playAlienSound('alienBlast'), 3000);
-        setTimeout(() => playAlienSound('alienLanding'), 6000);
+        const t1 = setTimeout(() => playAlienSound('alienTech'), 1000);
+        const t2 = setTimeout(() => playAlienSound('alienBlast'), 3000);
+        const t3 = setTimeout(() => playAlienSound('alienLanding'), 6000);
 
+        // Return cleanup
         return () => {
-            // Clear all intervals on cleanup
-            alienIntervalsRef.current.forEach(interval => clearInterval(interval));
-            alienIntervalsRef.current = [];
+            clearTimeout(t1);
+            clearTimeout(t2);
+            clearTimeout(t3);
+            cleanupAlienSounds();
         };
     }, [isUpsideDownMode]);
 

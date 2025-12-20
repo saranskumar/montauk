@@ -242,158 +242,165 @@ SECURE CONNECTION ESTABLISHED`;
   }
 
   return (
-    <RetroTerminalFrame
-      isUpsideDownMode={isUpsideDownMode}
-      stage={isUpsideDownMode ? 'DIMENSION_BREACH' : 'ACTIVE_MONITORING'}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1.5, ease: "easeOut" }}
+      className="h-full"
     >
-      {/* Visual Effects */}
-      {isUpsideDownMode && <Particles isUpsideDownMode={isUpsideDownMode} />}
+      <RetroTerminalFrame
+        isUpsideDownMode={isUpsideDownMode}
+        stage={isUpsideDownMode ? 'DIMENSION_BREACH' : 'ACTIVE_MONITORING'}
+      >
+        {/* Visual Effects */}
+        {isUpsideDownMode && <Particles isUpsideDownMode={isUpsideDownMode} />}
 
-      {/* Upside Down Glitch Effect */}
-      <GlitchEffect isActive={isUpsideDownMode} />
-      <AudioController isActive={true} isUpsideDownMode={isUpsideDownMode} />
+        {/* Upside Down Glitch Effect */}
+        <GlitchEffect isActive={isUpsideDownMode} />
+        <AudioController isActive={true} isUpsideDownMode={isUpsideDownMode} />
 
-      {/* Secret Code Flash Effect */}
-      <AnimatePresence>
-        {secretTriggered && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 1, 0] }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="fixed inset-0 z-[200] bg-white mix-blend-difference pointer-events-none"
-          />
-        )}
-      </AnimatePresence>
+        {/* Secret Code Flash Effect */}
+        <AnimatePresence>
+          {secretTriggered && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 1, 0] }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="fixed inset-0 z-[200] bg-white mix-blend-difference pointer-events-none"
+            />
+          )}
+        </AnimatePresence>
 
-      {/* App Layout Container */}
-      <div className="flex flex-col h-full overflow-hidden">
+        {/* App Layout Container */}
+        <div className="flex flex-col h-full overflow-hidden">
 
-        {/* Scrollable Main Content Area */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar pb-4 relative z-10">
-          {/* Header */}
-          <Header
-            isUpsideDownMode={isUpsideDownMode}
-            onToggleUpsideDown={() => {
-              setIsUpsideDownMode((prev) => !prev);
-              setGlitchTrigger(prev => prev + 1);
-            }}
-            onCreateIncident={() => setShowCreateModal(true)}
-          />
+          {/* Scrollable Main Content Area */}
+          <div className="flex-1 overflow-y-auto custom-scrollbar pb-4 relative z-10">
+            {/* Header */}
+            <Header
+              isUpsideDownMode={isUpsideDownMode}
+              onToggleUpsideDown={() => {
+                setIsUpsideDownMode((prev) => !prev);
+                setGlitchTrigger(prev => prev + 1);
+              }}
+              onCreateIncident={() => setShowCreateModal(true)}
+            />
 
-          {/* Retro Menu */}
-          <RetroMenu
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            isUpsideDownMode={isUpsideDownMode}
-            onCmdClick={() => {
-              const terminalInput = document.querySelector('input[placeholder="TYPE COMMAND..."]') as HTMLInputElement;
-              if (terminalInput) terminalInput.focus();
-            }}
-          />
+            {/* Retro Menu */}
+            <RetroMenu
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+              isUpsideDownMode={isUpsideDownMode}
+              onCmdClick={() => {
+                const terminalInput = document.querySelector('input[placeholder="TYPE COMMAND..."]') as HTMLInputElement;
+                if (terminalInput) terminalInput.focus();
+              }}
+            />
 
-          {/* Main Content View */}
-          <main className="max-w-7xl mx-auto px-4 py-6 text-left min-h-[400px]">
-            {/* INCIDENTS TAB */}
-            {activeTab === 'INCIDENTS' && (
-              <>
-                <FilterBar
-                  filters={filters}
-                  onFilterChange={handleFilterChange}
-                  isUpsideDownMode={isUpsideDownMode}
-                />
+            {/* Main Content View */}
+            <main className="max-w-7xl mx-auto px-4 py-6 text-left min-h-[400px]">
+              {/* INCIDENTS TAB */}
+              {activeTab === 'INCIDENTS' && (
+                <>
+                  <FilterBar
+                    filters={filters}
+                    onFilterChange={handleFilterChange}
+                    isUpsideDownMode={isUpsideDownMode}
+                  />
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  <div className={`lg:col-span-2 ${selectedIncident ? 'lg:col-span-2' : 'lg:col-span-3'}`}>
-                    <IncidentList
-                      incidents={incidents}
-                      filters={filters}
-                      selectedId={selectedIncident?.id || null}
-                      onSelectIncident={setSelectedIncident}
-                      isUpsideDownMode={isUpsideDownMode}
-                    />
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className={`lg:col-span-2 ${selectedIncident ? 'lg:col-span-2' : 'lg:col-span-3'}`}>
+                      <IncidentList
+                        incidents={incidents}
+                        filters={filters}
+                        selectedId={selectedIncident?.id || null}
+                        onSelectIncident={setSelectedIncident}
+                        isUpsideDownMode={isUpsideDownMode}
+                      />
+                    </div>
                   </div>
+                </>
+              )}
+
+              {/* LIVE USERS TAB */}
+              {activeTab === 'LIVE_USERS' && (
+                <LiveUsers isUpsideDownMode={isUpsideDownMode} />
+              )}
+
+              {/* MAPS BEACON TAB */}
+              {activeTab === 'MAPS_BEACON' && (
+                <SectorMap isUpsideDownMode={isUpsideDownMode} />
+              )}
+
+              {/* CMD TAB */}
+              {activeTab === 'CMD' && (
+                <div className="h-[70vh] relative">
+                  <Terminal
+                    isUpsideDownMode={isUpsideDownMode}
+                    onCommand={handleTerminalCommand}
+                    embedded={true}
+                  />
                 </div>
-              </>
-            )}
+              )}
+            </main>
 
-            {/* LIVE USERS TAB */}
-            {activeTab === 'LIVE_USERS' && (
-              <LiveUsers isUpsideDownMode={isUpsideDownMode} />
-            )}
-
-            {/* MAPS BEACON TAB */}
-            {activeTab === 'MAPS_BEACON' && (
-              <SectorMap isUpsideDownMode={isUpsideDownMode} />
-            )}
-
-            {/* CMD TAB */}
-            {activeTab === 'CMD' && (
-              <div className="h-[70vh] relative">
-                <Terminal
+            {/* Incident Details Panel */}
+            <AnimatePresence>
+              {selectedIncident && (
+                <IncidentPanel
+                  incident={selectedIncident}
+                  onClose={() => setSelectedIncident(null)}
+                  onUpdateStatus={handleUpdateStatus}
                   isUpsideDownMode={isUpsideDownMode}
-                  onCommand={handleTerminalCommand}
-                  embedded={true}
                 />
-              </div>
-            )}
-          </main>
+              )}
+            </AnimatePresence>
+          </div>
 
-          {/* Incident Details Panel */}
-          <AnimatePresence>
-            {selectedIncident && (
-              <IncidentPanel
-                incident={selectedIncident}
-                onClose={() => setSelectedIncident(null)}
-                onUpdateStatus={handleUpdateStatus}
-                isUpsideDownMode={isUpsideDownMode}
-              />
-            )}
-          </AnimatePresence>
+          {/* Mini HUD Graph - Fixed Bottom Right */}
+          <MiniSignalWave isUpsideDownMode={isUpsideDownMode} />
+
+          {/* Mini Threat Stats - Fixed Bottom Right (Left of Graph) */}
+          <MiniThreatStats
+            threatStats={threatStats}
+            isUpsideDownMode={isUpsideDownMode}
+          />
+
         </div>
 
-        {/* Mini HUD Graph - Fixed Bottom Right */}
-        <MiniSignalWave isUpsideDownMode={isUpsideDownMode} />
+        {/* Modals & Overlays */}
+        <AnimatePresence>
+          {showCreateModal && (
+            <CreateIncidentModal
+              onClose={() => setShowCreateModal(false)}
+              onSubmit={handleCreateIncident}
+              isUpsideDownMode={isUpsideDownMode}
+            />
+          )}
+        </AnimatePresence>
 
-        {/* Mini Threat Stats - Fixed Bottom Right (Left of Graph) */}
-        <MiniThreatStats
-          threatStats={threatStats}
-          isUpsideDownMode={isUpsideDownMode}
-        />
+        <AnimatePresence>
+          {showSignalCalibrator && (
+            <SignalCalibrator
+              onComplete={() => {
+                setShowSignalCalibrator(false);
+                showToast('SIGNAL CALIBRATION COMPLETE: 98.4%', 'success');
+              }}
+              onClose={() => setShowSignalCalibrator(false)}
+              isUpsideDownMode={isUpsideDownMode}
+            />
+          )}
+        </AnimatePresence>
 
-      </div>
+        <ToastContainer toasts={toasts} onDismiss={dismissToast} isUpsideDownMode={isUpsideDownMode} />
 
-      {/* Modals & Overlays */}
-      <AnimatePresence>
-        {showCreateModal && (
-          <CreateIncidentModal
-            onClose={() => setShowCreateModal(false)}
-            onSubmit={handleCreateIncident}
-            isUpsideDownMode={isUpsideDownMode}
-          />
-        )}
-      </AnimatePresence>
+        {/* Background Watermark */}
+        <div className="fixed inset-0 pointer-events-none z-0 opacity-10">
+          <SignalWaveWatermark isUpsideDownMode={isUpsideDownMode} />
+        </div>
 
-      <AnimatePresence>
-        {showSignalCalibrator && (
-          <SignalCalibrator
-            onComplete={() => {
-              setShowSignalCalibrator(false);
-              showToast('SIGNAL CALIBRATION COMPLETE: 98.4%', 'success');
-            }}
-            onClose={() => setShowSignalCalibrator(false)}
-            isUpsideDownMode={isUpsideDownMode}
-          />
-        )}
-      </AnimatePresence>
-
-      <ToastContainer toasts={toasts} onDismiss={dismissToast} isUpsideDownMode={isUpsideDownMode} />
-
-      {/* Background Watermark */}
-      <div className="fixed inset-0 pointer-events-none z-0 opacity-10">
-        <SignalWaveWatermark isUpsideDownMode={isUpsideDownMode} />
-      </div>
-
-    </RetroTerminalFrame>
+      </RetroTerminalFrame>
+    </motion.div>
   );
 }

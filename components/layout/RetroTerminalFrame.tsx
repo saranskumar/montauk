@@ -72,7 +72,7 @@ export default function RetroTerminalFrame({
 
                     {/* Content Area - Scrollable */}
                     <div className="flex-1 relative overflow-hidden">
-                        <div className="absolute inset-0 overflow-y-auto scrollbar-thin scrollbar-thumb-amber-900/50 scrollbar-track-transparent">
+                        <div className="absolute inset-0 overflow-y-auto scrollbar-thin scrollbar-thumb-amber-900/50 scrollbar-track-transparent p-6">
                             {children}
                         </div>
                     </div>

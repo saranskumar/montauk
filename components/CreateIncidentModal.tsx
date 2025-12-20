@@ -168,6 +168,45 @@ export default function CreateIncidentModal({
                         </select>
                     </div>
 
+                    {/* Dimension Selector (Radio) */}
+                    <div>
+                        <label className={labelClass}>Dimension Origin</label>
+                        <div className="flex gap-4 pt-1">
+                            <label className={`flex items-center gap-2 cursor-pointer ${isUpsideDownMode ? 'text-upside-down-glow' : 'text-hawkins-text-dim'}`}>
+                                <input
+                                    type="radio"
+                                    name="dimension"
+                                    value="REAL WORLD"
+                                    checked={!formData.tags.includes('ORIGIN: UPSIDE DOWN')}
+                                    onChange={() => {
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            tags: prev.tags.filter(t => t !== 'ORIGIN: UPSIDE DOWN').concat(['ORIGIN: REAL WORLD'])
+                                        }));
+                                    }}
+                                    className="accent-hawkins-accent"
+                                />
+                                <span className="text-xs font-mono font-bold">REAL WORLD</span>
+                            </label>
+                            <label className={`flex items-center gap-2 cursor-pointer ${isUpsideDownMode ? 'text-upside-down-glow' : 'text-hawkins-text-dim'}`}>
+                                <input
+                                    type="radio"
+                                    name="dimension"
+                                    value="UPSIDE DOWN"
+                                    checked={formData.tags.includes('ORIGIN: UPSIDE DOWN')}
+                                    onChange={() => {
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            tags: prev.tags.filter(t => t !== 'ORIGIN: REAL WORLD').concat(['ORIGIN: UPSIDE DOWN'])
+                                        }));
+                                    }}
+                                    className="accent-red-600"
+                                />
+                                <span className="text-xs font-mono font-bold text-red-500">UPSIDE DOWN</span>
+                            </label>
+                        </div>
+                    </div>
+
                     {/* Tags */}
                     <div>
                         <label className={labelClass}>Tags</label>
@@ -184,8 +223,8 @@ export default function CreateIncidentModal({
                                 type="button"
                                 onClick={addTag}
                                 className={`px-4 rounded border-2 font-bold ${isUpsideDownMode
-                                        ? 'border-upside-down-accent text-upside-down-accent hover:bg-upside-down-accent hover:text-black'
-                                        : 'border-hawkins-accent text-hawkins-accent hover:bg-hawkins-accent hover:text-black'
+                                    ? 'border-upside-down-accent text-upside-down-accent hover:bg-upside-down-accent hover:text-black'
+                                    : 'border-hawkins-accent text-hawkins-accent hover:bg-hawkins-accent hover:text-black'
                                     } transition-colors`}
                             >
                                 ADD
@@ -198,8 +237,8 @@ export default function CreateIncidentModal({
                                         key={tag}
                                         onClick={() => removeTag(tag)}
                                         className={`px-2 py-1 rounded text-xs cursor-pointer ${isUpsideDownMode
-                                                ? 'bg-upside-down-border text-upside-down-glow hover:bg-upside-down-danger'
-                                                : 'bg-hawkins-border text-hawkins-text-primary hover:bg-hawkins-danger'
+                                            ? 'bg-upside-down-border text-upside-down-glow hover:bg-upside-down-danger'
+                                            : 'bg-hawkins-border text-hawkins-text-primary hover:bg-hawkins-danger'
                                             } transition-colors`}
                                     >
                                         {tag} ×
@@ -215,8 +254,8 @@ export default function CreateIncidentModal({
                             type="button"
                             onClick={onClose}
                             className={`flex-1 px-4 py-2 rounded border-2 font-bold uppercase tracking-wider text-sm transition-colors ${isUpsideDownMode
-                                    ? 'border-upside-down-border text-upside-down-glow hover:border-upside-down-accent'
-                                    : 'border-hawkins-border text-hawkins-text-primary hover:border-hawkins-accent'
+                                ? 'border-upside-down-border text-upside-down-glow hover:border-upside-down-accent'
+                                : 'border-hawkins-border text-hawkins-text-primary hover:border-hawkins-accent'
                                 }`}
                         >
                             Cancel
@@ -224,8 +263,8 @@ export default function CreateIncidentModal({
                         <button
                             type="submit"
                             className={`flex-1 px-4 py-2 rounded font-bold uppercase tracking-wider text-sm transition-colors ${isUpsideDownMode
-                                    ? 'bg-upside-down-accent text-black hover:bg-upside-down-glow'
-                                    : 'bg-hawkins-accent text-black hover:bg-hawkins-accent-bright'
+                                ? 'bg-upside-down-accent text-black hover:bg-upside-down-glow'
+                                : 'bg-hawkins-accent text-black hover:bg-hawkins-accent-bright'
                                 }`}
                         >
                             Log Incident

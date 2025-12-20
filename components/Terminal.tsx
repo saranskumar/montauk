@@ -110,7 +110,7 @@ export default function Terminal({ isUpsideDownMode, onCommand, embedded = false
                     </span>
                 </div>
 
-                {/* History Display */}
+                {/* Content Display (History + Input) */}
                 <div
                     ref={historyRef}
                     className={`${embedded ? 'flex-1 min-h-0' : 'h-24'} overflow-y-auto mb-2 font-mono text-xs space-y-1 scrollbar-thin`}
@@ -127,27 +127,26 @@ export default function Terminal({ isUpsideDownMode, onCommand, embedded = false
                             )}
                         </div>
                     ))}
-                </div>
 
-                {/* Input Line */}
-                <div className="flex items-center gap-2">
-                    <span className={`font-mono text-sm ${isUpsideDownMode ? 'text-upside-down-accent' : 'text-hawkins-accent'}`}>
-                        {'>'}
-                    </span>
-                    <input
-                        ref={inputRef}
-                        type="text"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                        onClick={(e) => e.stopPropagation()}
-                        placeholder="TYPE COMMAND..."
-                        autoFocus
-                        className={`flex-1 bg-transparent border-none outline-none font-mono text-sm uppercase ${isUpsideDownMode
-                            ? 'text-upside-down-text placeholder:text-upside-down-text/30'
-                            : 'text-hawkins-text-primary placeholder:text-hawkins-text-dim/30'
-                            }`}
-                    />
+                    {/* Active Input Line */}
+                    <div className="flex items-center gap-2 opacity-100">
+                        <span className={`font-mono text-sm ${isUpsideDownMode ? 'text-upside-down-accent' : 'text-hawkins-accent'}`}>
+                            {'>'}
+                        </span>
+                        <input
+                            ref={inputRef}
+                            type="text"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                            onClick={(e) => e.stopPropagation()}
+                            autoFocus
+                            className={`flex-1 bg-transparent border-none outline-none font-mono text-sm uppercase ${isUpsideDownMode
+                                ? 'text-upside-down-text placeholder:text-upside-down-text/30'
+                                : 'text-hawkins-text-primary placeholder:text-hawkins-text-dim/30'
+                                }`}
+                        />
+                    </div>
                 </div>
             </div>
         </div>
