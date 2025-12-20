@@ -72,7 +72,7 @@ export default function IncidentCard({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            exit={{ opacity: 0, y: -20 }}
+
             onClick={onClick}
             className={`
         p-4 rounded-lg border-2 cursor-pointer transition-all
