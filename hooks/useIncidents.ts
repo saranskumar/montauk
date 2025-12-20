@@ -26,7 +26,7 @@ export function useIncidents() {
         const newIncident: Incident = {
             ...input,
             id: generateId(),
-            status: 'ACTIVE',
+            status: input.status || 'ACTIVE',
             createdAt: Date.now(),
             recommendedAction: 'Investigate and assess threat level.',
         };

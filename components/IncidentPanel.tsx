@@ -63,13 +63,7 @@ export default function IncidentPanel({
                         {incident.threatLevel}
                     </span>
                 </div>
-                <button
-                    onClick={onClose}
-                    className={`p-2 rounded hover:bg-white/10 transition-colors ${isUpsideDownMode ? 'text-upside-down-glow' : 'text-hawkins-text-primary'
-                        }`}
-                >
-                    <X className="w-5 h-5" />
-                </button>
+                {/* Close X removed as per request */}
             </div>
 
             {/* Content */}
@@ -160,6 +154,20 @@ export default function IncidentPanel({
                         ))}
                     </div>
                 </div>
+
+                {/* Separator */}
+                <div className={`h-px my-4 ${isUpsideDownMode ? 'bg-upside-down-border' : 'bg-hawkins-border'}`} />
+
+                {/* Close Button at Bottom */}
+                <button
+                    onClick={onClose}
+                    className={`w-full py-3 mt-4 rounded border-2 font-bold uppercase tracking-wider transition-colors ${isUpsideDownMode
+                        ? 'border-upside-down-border text-upside-down-glow hover:bg-upside-down-border/30'
+                        : 'border-hawkins-border text-hawkins-text-primary hover:bg-hawkins-border/30'
+                        }`}
+                >
+                    CLOSE
+                </button>
             </div>
         </motion.div>
     );
@@ -186,4 +194,3 @@ function InfoItem({ icon, label, value, isUpsideDownMode }: InfoItemProps) {
         </div>
     );
 }
-

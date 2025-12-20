@@ -83,6 +83,19 @@ export default function Home() {
         return;
       }
 
+      // GLOBAL: Escape - Close all panels
+      if (e.key === 'Escape') {
+        setSelectedIncident(null);
+        setShowCreateModal(false);
+        setShowSignalCalibrator(false);
+        return;
+      }
+
+      // Block other shortcuts if any modal/overlay is acting
+      if (showSignalCalibrator || showCreateModal || selectedIncident) {
+        return;
+      }
+
       // U - Toggle Upside Down Mode
       if (e.key.toLowerCase() === 'u') {
         setIsUpsideDownMode((prev) => !prev);
@@ -96,7 +109,7 @@ export default function Home() {
 
       // C - Signal Calibrator
       if (e.key.toLowerCase() === 'c') {
-        setShowSignalCalibrator(prev => !prev);
+        setShowSignalCalibrator(true);
       }
 
       // Arrow Keys - Navigate Tabs
@@ -116,18 +129,11 @@ export default function Home() {
           return 'MAPS_BEACON'; // CMD -> MAPS
         });
       }
-
-      // Escape - Close panels
-      if (e.key === 'Escape') {
-        setSelectedIncident(null);
-        setShowCreateModal(false);
-        setShowSignalCalibrator(false);
-      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [booting]);
+  }, [booting, showSignalCalibrator, showCreateModal, selectedIncident]);
 
   // Apply upside down mode class to root
   useEffect(() => {
@@ -185,6 +191,11 @@ SECURE CONNECTION ESTABLISHED`;
 
     if (cmd === '/STAT') {
       return `CRITICAL: ${threatStats.CRITICAL} | SEVERE: ${threatStats.SEVERE} | MODERATE: ${threatStats.MODERATE} | LOW: ${threatStats.LOW}`;
+    }
+
+    if (cmd === '/REBOOT') {
+      setBooting(true);
+      return 'INITIATING SYSTEM REBOOT...';
     }
 
     // Legacy/Shortcut Commands
@@ -285,6 +296,7 @@ SECURE CONNECTION ESTABLISHED`;
                 setGlitchTrigger(prev => prev + 1);
               }}
               onCreateIncident={() => setShowCreateModal(true)}
+              threatStats={threatStats}
             />
 
             {/* Retro Menu */}
@@ -299,7 +311,7 @@ SECURE CONNECTION ESTABLISHED`;
             />
 
             {/* Main Content View */}
-            <main className="max-w-7xl mx-auto px-4 py-6 text-left min-h-[400px]">
+            <main className="max-w-7xl mx-auto px-12 py-6 text-left min-h-[400px]">
               {/* INCIDENTS TAB */}
               {activeTab === 'INCIDENTS' && (
                 <>
@@ -310,7 +322,7 @@ SECURE CONNECTION ESTABLISHED`;
                   />
 
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div className={`lg:col-span-2 ${selectedIncident ? 'lg:col-span-2' : 'lg:col-span-3'}`}>
+                    <div className="lg:col-span-3">
                       <IncidentList
                         incidents={incidents}
                         filters={filters}

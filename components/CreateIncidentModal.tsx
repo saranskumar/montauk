@@ -125,8 +125,8 @@ export default function CreateIncidentModal({
                         />
                     </div>
 
-                    {/* Location & Threat Level */}
-                    <div className="grid grid-cols-2 gap-4">
+                    {/* Location, Threat Level, Status */}
+                    <div className="grid grid-cols-3 gap-4">
                         <div>
                             <label className={labelClass}>Location</label>
                             <select
@@ -150,6 +150,19 @@ export default function CreateIncidentModal({
                                 <option value="SEVERE">Severe</option>
                                 <option value="MODERATE">Moderate</option>
                                 <option value="LOW">Low</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className={labelClass}>Status</label>
+                            <select
+                                value={formData.status || 'ACTIVE'}
+                                onChange={(e) => setFormData((prev) => ({ ...prev, status: e.target.value as any }))}
+                                className={inputClass}
+                            >
+                                <option value="ACTIVE">Active</option>
+                                <option value="INVESTIGATING">Investigating</option>
+                                <option value="CONTAINED">Contained</option>
+                                <option value="RESOLVED">Resolved</option>
                             </select>
                         </div>
                     </div>
@@ -275,4 +288,3 @@ export default function CreateIncidentModal({
         </motion.div>
     );
 }
-

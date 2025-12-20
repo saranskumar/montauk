@@ -7,7 +7,7 @@ interface RetroTerminalFrameProps {
     children: ReactNode;
     isUpsideDownMode: boolean;
     className?: string;
-    stage?: string; // Optional stage name to display
+    stage?: string;
 }
 
 export default function RetroTerminalFrame({
@@ -45,8 +45,8 @@ export default function RetroTerminalFrame({
                     className={`relative flex-1 border-2 ${borderColor} rounded bg-black/90 overflow-hidden flex flex-col`}
                     style={{
                         boxShadow: isUpsideDownMode
-                            ? 'inset 0 0 100px rgba(0,0,0,1), 0 0 20px rgba(220, 38, 38, 0.2)'
-                            : 'inset 0 0 100px rgba(0,0,0,1), 0 0 20px rgba(217, 119, 6, 0.2)',
+                            ? 'inset 0 0 20px rgba(0,0,0,0.8), 0 0 20px rgba(220, 38, 38, 0.2)'
+                            : 'inset 0 0 20px rgba(0,0,0,0.8), 0 0 20px rgba(217, 119, 6, 0.2)',
                     }}
                 >
                     {/* Corner Brackets */}

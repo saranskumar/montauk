@@ -7,12 +7,14 @@ interface HeaderProps {
     isUpsideDownMode: boolean;
     onToggleUpsideDown: () => void;
     onCreateIncident: () => void;
+    threatStats: { CRITICAL: number; SEVERE: number; MODERATE: number; LOW: number };
 }
 
 export default function Header({
     isUpsideDownMode,
     onToggleUpsideDown,
     onCreateIncident,
+    threatStats,
 }: HeaderProps) {
     // Real-time clock
     const currentTime = useMemo(() => {
@@ -27,26 +29,35 @@ export default function Header({
                 : 'border-hawkins-border bg-hawkins-bg/95'
                 }`}
         >
-            <div className="max-w-7xl mx-auto px-4 py-4">
-                {/* Top Row */}
-                <div className="flex items-center justify-between mb-4">
-                    {/* Logo & Title */}
-                    <div className="flex items-center gap-4">
-                        <div>
-                            <h1
-                                className={`text-xl font-bold tracking-[0.2em] uppercase ${isUpsideDownMode ? 'text-upside-down-accent glitch-text' : 'text-hawkins-accent'
-                                    }`}
-                                data-text="HAWKINS COMMAND"
-                            >
-                                HAWKINS COMMAND
-                            </h1>
-                            <p className="text-[10px] uppercase tracking-widest opacity-60">
-                                Incident Management System
-                            </p>
+            <div className="max-w-7xl mx-auto px-12 py-4">
+                {/* Top Row: Logo/Stats + Controls */}
+                <div className="flex items-center justify-between">
+
+                    {/* LEFT: Logo & Title & Threat Stats */}
+                    <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-4">
+                            <div>
+                                <h1
+                                    className={`text-xl font-bold tracking-[0.2em] uppercase ${isUpsideDownMode ? 'text-upside-down-accent glitch-text' : 'text-hawkins-accent'
+                                        }`}
+                                    data-text="HAWKINS COMMAND"
+                                >
+                                    HAWKINS COMMAND
+                                </h1>
+                                <p className="text-[10px] uppercase tracking-widest opacity-60">
+                                    Incident Management System
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Threat Stats Summary (New) */}
+                        <div className="hidden md:flex items-center gap-2 pb-1 border-l pl-6 border-white/10">
+                            <div className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${isUpsideDownMode ? 'bg-pink-600/20 text-pink-500' : 'bg-red-600/20 text-red-600'}`}>CRIT: {threatStats.CRITICAL}</div>
+                            <div className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${isUpsideDownMode ? 'bg-purple-600/20 text-purple-500' : 'bg-orange-600/20 text-orange-600'}`}>SEV: {threatStats.SEVERE}</div>
                         </div>
                     </div>
 
-                    {/* Controls */}
+                    {/* RIGHT: Controls */}
                     <div className="flex items-center gap-3">
                         {/* Clock */}
                         <div

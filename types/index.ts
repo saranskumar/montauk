@@ -26,6 +26,7 @@ export interface NewIncidentInput {
     threatLevel: ThreatLevel;
     assignee: string;
     tags: string[];
+    status?: IncidentStatus;
 }
 
 // Filter State

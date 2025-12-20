@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, AlertTriangle, Info, X } from 'lucide-react';
 import { Toast as ToastType } from '@/types';
@@ -98,14 +98,14 @@ export function ToastContainer({ toasts, onDismiss, isUpsideDownMode }: ToastCon
 export function useToasts() {
     const [toasts, setToasts] = useState<ToastType[]>([]);
 
-    const showToast = (message: string, type: ToastType['type'] = 'success') => {
+    const showToast = useCallback((message: string, type: ToastType['type'] = 'success') => {
         const id = Math.random().toString(36).substring(7);
         setToasts((prev) => [...prev, { id, message, type }]);
-    };
+    }, []);
 
-    const dismissToast = (id: string) => {
+    const dismissToast = useCallback((id: string) => {
         setToasts((prev) => prev.filter((t) => t.id !== id));
-    };
+    }, []);
 
     return { toasts, showToast, dismissToast };
 }

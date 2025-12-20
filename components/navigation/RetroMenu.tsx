@@ -51,7 +51,7 @@ export default function RetroMenu({ activeTab, onTabChange, isUpsideDownMode, on
 
     return (
         <div className={`w-full border-b-2 ${borderColor} bg-black/80 backdrop-blur-sm p-1`}>
-            <div className="max-w-7xl mx-auto flex flex-wrap gap-2 md:gap-6 px-2">
+            <div className="max-w-7xl mx-auto flex flex-wrap gap-2 md:gap-6 px-12">
                 {menuItems.map((item) => {
                     const isActive = activeTab === item.id;
 

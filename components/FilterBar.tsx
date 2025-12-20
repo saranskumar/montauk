@@ -1,6 +1,6 @@
 'use client';
 
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { FilterState, ThreatLevel, IncidentStatus } from '@/types';
 
 interface FilterBarProps {
@@ -32,8 +32,16 @@ export default function FilterBar({ filters, onFilterChange, isUpsideDownMode }:
                         placeholder="Search incidents..."
                         value={filters.search}
                         onChange={(e) => onFilterChange({ search: e.target.value })}
-                        className={`${inputClass} w-full pl-10`}
+                        className={`${inputClass} w-full pl-10 pr-10`}
                     />
+                    {filters.search && (
+                        <button
+                            onClick={() => onFilterChange({ search: '' })}
+                            className={`absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-0.5 hover:bg-black/20 ${isUpsideDownMode ? 'text-upside-down-glow' : 'text-hawkins-text-dim'}`}
+                        >
+                            <X className="w-3 h-3" />
+                        </button>
+                    )}
                 </div>
 
                 {/* Threat Level Filter */}
@@ -76,4 +84,3 @@ export default function FilterBar({ filters, onFilterChange, isUpsideDownMode }:
         </div>
     );
 }
-
